@@ -20,6 +20,7 @@
 
 
 #include "tela.h"
+#include "carro.h"
 #include "gotoxy.h"
 #include "milisegundos.h"
 #include "caracteres.h"
@@ -46,22 +47,19 @@
 #define MOVER_CARRO_PARA_ESQUERDA -1
 
 
-#define TAMANHO_CARRO_LINHAS 6
-#define TAMANHO_CARRO_COLUNAS 15
-
 #define TAMANHO_PISTA (TAMANHO_CARRO_COLUNAS * 3)
 
 
 
 
-char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] =	{
-																{221, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 222},
-																{223, 223, 223, 223, 219, 219, 219, 219, 219, 219, 219, 223, 223, 223, 223},
-																{177, 177, 177, ' ', ' ', ' ', 219, 219, 219, ' ', ' ', ' ', 177, 177, 177},
-																{177, 177, 177, 220, 219, 219, 219, 219, 219, 219, 219, 220, 177, 177, 177},
-																{177, 177, 177, 223, 219, 219, 219, 219, 219, 219, 219, 223, 177, 177, 177},
-																{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
-															};
+const unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] ={
+																			{221, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 222},
+																			{223, 223, 223, 223, 219, 219, 219, 219, 219, 219, 219, 223, 223, 223, 223},
+																			{177, 177, 177, ' ', ' ', ' ', 219, 219, 219, ' ', ' ', ' ', 177, 177, 177},
+																			{177, 177, 177, 220, 219, 219, 219, 219, 219, 219, 219, 220, 177, 177, 177},
+																			{177, 177, 177, 223, 219, 219, 219, 219, 219, 219, 219, 223, 177, 177, 177},
+																			{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
+																		};
 
 
 /* Estruturas */
@@ -95,28 +93,16 @@ int main(void)
 	
 	/* Permite o uso de Acentuação */
 	setlocale(LC_ALL, "ALL");
-	/*
-	for(indice = 0; indice < 256; indice++)	
-	{
-		printf("\n %c = %d", indice, indice);
-	}
+		
+		
 	
-	printf("\n %c = %d", ASCII_1, ASCII_1);
-	printf("\n %c = %d", ASCII_2, ASCII_2);
-	printf("\n %c = %d", ASCII_3, ASCII_3);
+	Inicializa_Tela();
+	Exibe_Tela();
 	
-	printf("\n %c = %d", ASCII_11, ASCII_11);
-	printf("\n %c = %d", ASCII_12, ASCII_12);
-	printf("\n %c = %d", ASCII_13, ASCII_13);
-	printf("\n %c = %d", ASCII_14, ASCII_14);
-	printf("\n %c = %d", ASCII_15, ASCII_15);
-	printf("\n %c = %d", ASCII_16, ASCII_16);
-	*/
-	
-	
-	//printf("\n\n\n");
-	
-	
+	getch();
+		
+		
+	/* Exibe Carro */
 	for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
 	{
 		printf("\n");
@@ -127,9 +113,10 @@ int main(void)
 	}
 	
 	
-	//printf("\n\n\n");
+	
 	
 	/*
+	printf("\n\n\n");
 	Exibir_Numero(0);printf("\n");
 	Exibir_Numero(1);printf("\n");
 	Exibir_Numero(2);printf("\n");
@@ -142,9 +129,21 @@ int main(void)
 	Exibir_Numero(9);printf("\n");
 	*/
 	
+	printf("\n");
 	Cria_Placar();
 	Alterar_Placar(789);
 	Exibe_Placar();
+	
+	printf("\n%c%c", 177, 219);
+	printf("\n%c%c", 219, 177);
+	printf("\n%c%c", 177, 219);
+	printf("\n%c%c", 219, 177);
+	printf("\n%c%c", 177, 219);
+	printf("\n%c%c", 219, 177);
+	printf("\n%c%c", 177, 219);
+	printf("\n%c%c", 219, 177);
+	printf("\n%c%c", 177, 219);
+	printf("\n%c%c", 219, 177);
 	
 	getch();
 	

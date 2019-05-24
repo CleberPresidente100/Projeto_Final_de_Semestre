@@ -15,8 +15,8 @@
 	/* Constantes */
 	#define __TELA__
 	
-	#define TAMANHO_TELA_LINHAS 6
-	#define TAMANHO_TELA_COLUNAS 15
+	#define TAMANHO_TELA_LINHAS 29
+	#define TAMANHO_TELA_COLUNAS 80
 	
 	#define ESPESSURA_BORDA_PLACAR 1
 	#define TAMANHO_PLACAR_LINHAS 7
@@ -28,6 +28,8 @@
 	void Cria_Placar();
 	void Exibe_Placar();
 	void Alterar_Placar(int pontuacao);
+	void Inicializa_Tela();
+	void Exibe_Tela();
 	
 #endif
 

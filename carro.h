@@ -16,14 +16,14 @@
 	#define __CARRO__
 	
 	#define TAMANHO_CARRO_LINHAS 6
-	#define TAMANHO_CARRO_COLUNAS 15
+	#define TAMANHO_CARRO_COLUNAS 15 // O Espaço Útil da Pista deve ser de 3x a Largura do Carro. Portanto a pista tem 45 + (2x Espessura da Borda) Colunas.
 	
 	/* Estruturas */
 	struct struct_Carro
 	{
 		int pos_top_left_x; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo do Carro
 		int pos_top_left_y; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo do Carro
-		char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS];
+		unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS];
 	};
 	
 	/* Funções */
