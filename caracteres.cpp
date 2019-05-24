@@ -20,91 +20,91 @@
 
 
 
-const char NUMERO_0[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{' ', 219, 219, ' '},
-																				{219, ' ', ' ', 219},
-																				{219, ' ', ' ', 219},
-																				{219, ' ', ' ', 219},
-																				{' ', 219, 219, ' '}
-																			};
+const unsigned char NUMERO_0[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{' ', 219, 219, ' '},
+																						{219, ' ', ' ', 219},
+																						{219, ' ', ' ', 219},
+																						{219, ' ', ' ', 219},
+																						{' ', 219, 219, ' '}
+																					};
 
-const char NUMERO_1[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{' ', ' ', ' ', 219},
-																				{' ', ' ', 219, 219},
-																				{' ', 219, ' ', 219},
-																				{' ', ' ', ' ', 219},
-																				{' ', ' ', ' ', 219}
-																			};
+const unsigned char NUMERO_1[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{' ', ' ', ' ', 219},
+																						{' ', ' ', 219, 219},
+																						{' ', 219, ' ', 219},
+																						{' ', ' ', ' ', 219},
+																						{' ', ' ', ' ', 219}
+																					};
 
-const char NUMERO_2[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{219, 219, 219, ' '},
-																				{' ', ' ', ' ', 219},
-																				{' ', 219, 219, ' '},
-																				{219, ' ', ' ', ' '},
-																				{219, 219, 219, 219}
-																			};
+const unsigned char NUMERO_2[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{219, 219, 219, ' '},
+																						{' ', ' ', ' ', 219},
+																						{' ', 219, 219, ' '},
+																						{219, ' ', ' ', ' '},
+																						{219, 219, 219, 219}
+																					};
 
-const char NUMERO_3[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{219, 219, 219, ' '},
-																				{' ', ' ', ' ', 219},
-																				{' ', 219, 219, ' '},
-																				{' ', ' ', ' ', 219},
-																				{219, 219, 219, ' '}
-																			};
+const unsigned char NUMERO_3[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{219, 219, 219, ' '},
+																						{' ', ' ', ' ', 219},
+																						{' ', 219, 219, ' '},
+																						{' ', ' ', ' ', 219},
+																						{219, 219, 219, ' '}
+																					};
 
-const char NUMERO_4[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{' ', ' ', 219, ' '},
-																				{' ', 219, ' ', ' '},
-																				{219, ' ', ' ', 219},
-																				{219, 219, 219, 219},
-																				{' ', ' ', ' ', 219}
-																			};
+const unsigned char NUMERO_4[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{' ', ' ', 219, ' '},
+																						{' ', 219, ' ', ' '},
+																						{219, ' ', ' ', 219},
+																						{219, 219, 219, 219},
+																						{' ', ' ', ' ', 219}
+																					};
 
-const char NUMERO_5[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{219, 219, 219, 219},
-																				{219, ' ', ' ', ' '},
-																				{219, 219, 219, 219},
-																				{' ', ' ', ' ', 219},
-																				{219, 219, 219, ' '}
-																			};
+const unsigned char NUMERO_5[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{219, 219, 219, 219},
+																						{219, ' ', ' ', ' '},
+																						{219, 219, 219, 219},
+																						{' ', ' ', ' ', 219},
+																						{219, 219, 219, ' '}
+																					};
 
-const char NUMERO_6[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{' ', 219, 219, 219},
-																				{219, ' ', ' ', ' '},
-																				{219, 219, 219, 219},
-																				{219, ' ', ' ', 219},
-																				{' ', 219, 219, ' '}
-																			};
+const unsigned char NUMERO_6[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{' ', 219, 219, 219},
+																						{219, ' ', ' ', ' '},
+																						{219, 219, 219, 219},
+																						{219, ' ', ' ', 219},
+																						{' ', 219, 219, ' '}
+																					};
 
-const char NUMERO_7[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{219, 219, 219, 219},
-																				{' ', ' ', ' ', 219},
-																				{' ', ' ', 219, ' '},
-																				{' ', 219, ' ', ' '},
-																				{' ', 219, ' ', ' '}
-																			};
+const unsigned char NUMERO_7[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{219, 219, 219, 219},
+																						{' ', ' ', ' ', 219},
+																						{' ', ' ', 219, ' '},
+																						{' ', 219, ' ', ' '},
+																						{' ', 219, ' ', ' '}
+																					};
 
-const char NUMERO_8[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{' ', 219, 219, ' '},
-																				{219, ' ', ' ', 219},
-																				{' ', 219, 219, ' '},
-																				{219, ' ', ' ', 219},
-																				{' ', 219, 219, ' '}
-																			};
+const unsigned char NUMERO_8[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{' ', 219, 219, ' '},
+																						{219, ' ', ' ', 219},
+																						{' ', 219, 219, ' '},
+																						{219, ' ', ' ', 219},
+																						{' ', 219, 219, ' '}
+																					};
 
-const char NUMERO_9[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
-																				{219, 219, 219, 219},
-																				{219, ' ', ' ', 219},
-																				{' ', 219, 219, 219},
-																				{' ', ' ', ' ', 219},
-																				{219, 219, 219, ' '}
-																			};
+const unsigned char NUMERO_9[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
+																						{219, 219, 219, 219},
+																						{219, ' ', ' ', 219},
+																						{' ', 219, 219, 219},
+																						{' ', ' ', ' ', 219},
+																						{219, 219, 219, ' '}
+																					};
 
 /* Estruturas */
 
 
 /* Funções Privadas */
-void Exibir_na_Tela(const char Numero[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS]);
+void Exibir_na_Tela(const unsigned char Numero[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS]);
 	
 
 
@@ -155,7 +155,7 @@ void Exibir_Numero(int numero)
 }
 
 
-void Exibir_na_Tela(const char Numero[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS])
+void Exibir_na_Tela(const unsigned char Numero[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS])
 {
 	int linha = 0;
 	int coluna = 0;
@@ -173,7 +173,7 @@ void Exibir_na_Tela(const char Numero[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_
 
 
 
-char Montar_Caractere(int numero, int linha, int coluna)
+unsigned char Montar_Caractere(int numero, int linha, int coluna)
 {
 	
 	switch(numero)

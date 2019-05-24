@@ -13,21 +13,23 @@
 /* Inclusão das Bibliotecas */
 #include <stdio.h>
 
+#include "carro.h"
+
 
 /* Constantes */
-//#define TAMANHO_CARRO_LINHAS 6
-//#define TAMANHO_CARRO_COLUNAS 15
+
+const unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] ={
+																			{221, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 222},
+																			{223, 223, 223, 223, 219, 219, 219, 219, 219, 219, 219, 223, 223, 223, 223},
+																			{177, 177, 177, ' ', ' ', ' ', 219, 219, 219, ' ', ' ', ' ', 177, 177, 177},
+																			{177, 177, 177, 220, 219, 219, 219, 219, 219, 219, 219, 220, 177, 177, 177},
+																			{177, 177, 177, 223, 219, 219, 219, 219, 219, 219, 219, 223, 177, 177, 177},
+																			{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
+																		};
 
 
 /* Estruturas */
-/*
-struct struct_Carro
-{
-	int pos_top_left_x; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo do Carro
-	int pos_top_left_y; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo do Carro
-	char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS];
-};
-*/
+
 
 
 

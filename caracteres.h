@@ -22,7 +22,7 @@
 	
 	/* Funções */
 	void Exibir_Numero(int numero);
-	char Montar_Caractere(int numero, int linha, int coluna);
+	unsigned char Montar_Caractere(int numero, int linha, int coluna);
 	
 #endif
 
