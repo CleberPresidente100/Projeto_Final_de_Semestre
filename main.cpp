@@ -43,11 +43,7 @@
 #define ASCII_16 254
 
 
-#define MOVER_CARRO_PARA_DIREITA 1
-#define MOVER_CARRO_PARA_ESQUERDA -1
 
-
-#define TAMANHO_PISTA (TAMANHO_CARRO_COLUNAS * 3)
 
 
 
@@ -86,6 +82,8 @@ int main(void)
 	int auxiliar = 0;	
 	int posicao_carro = 0;
 	
+	unsigned char tela_atual = 0;
+	
 	
 	clock_t tempo_inicio;
 	unsigned int milisegundos = 0;
@@ -96,13 +94,10 @@ int main(void)
 		
 		
 	
-	Inicializa_Tela();
-	Exibe_Tela();
-	
-	getch();
 		
 		
 	/* Exibe Carro */
+	/*
 	for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
 	{
 		printf("\n");
@@ -111,7 +106,7 @@ int main(void)
 			printf("%c", CARRO[linha][coluna]);
 		}
 	}
-	
+	*/
 	
 	
 	
@@ -129,11 +124,13 @@ int main(void)
 	Exibir_Numero(9);printf("\n");
 	*/
 	
-	printf("\n");
-	Cria_Placar();
-	Alterar_Placar(789);
-	Exibe_Placar();
+	//printf("\n");
+	//Cria_Placar();
+	//Alterar_Placar(789);
+	//Exibe_Placar();
 	
+	/* Pista */
+	/*
 	printf("\n%c%c", 177, 219);
 	printf("\n%c%c", 219, 177);
 	printf("\n%c%c", 177, 219);
@@ -146,6 +143,13 @@ int main(void)
 	printf("\n%c%c", 219, 177);
 	
 	getch();
+	*/
+	
+	
+	Realiza_Inicializacao_das_Estruturas();
+	Exibe_Tela(); // Exibe as Bordas da Tela
+	Atualizar_Tela();
+	
 	
 	tempo_inicio = Inicia_Cronometro();
 	while(1)
@@ -153,77 +157,31 @@ int main(void)
 		milisegundos = Tempo_Cronometro(tempo_inicio);
 		
 		
-		if(kbhit())
+		if(milisegundos > 10)
 		{
-			//opcao = getch();
-			movimentar_carro = VerificaTeclasDeMovimentacao(getch());
-		}
-		
-		
-		
-		if(movimentar_carro)
-		//if(milisegundos > 1)
-		{
-			//system("cls");
-			//printf("\n\n\n");
-			if(movimentar_carro == MOVER_CARRO_PARA_DIREITA)
+			if(kbhit())
 			{
-				if(posicao_carro < 10)
+				movimentar_carro = VerificaTeclasDeMovimentacao(getch());
+				
+				if(movimentar_carro)
 				{
-					posicao_carro++;
-				}
-			}
-			else if(movimentar_carro == MOVER_CARRO_PARA_ESQUERDA)
-			{
-				if(posicao_carro > 0)
-				{
-					posicao_carro--;
+					Move_Carro(movimentar_carro);
+					Atualizar_Tela();
+					movimentar_carro = 0;
 				}
 			}
 			
-			movimentar_carro = 0;
 			
-			for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
-			{
-				gotoxy(posicao_carro, linha + 1);
-				//printf("\n");
-				/*
-				for(auxiliar = posicao_carro; auxiliar > 0; auxiliar--)
-				{
-					printf(" ");
-				}
-				*/
-				for(coluna = 0; coluna < TAMANHO_CARRO_COLUNAS; coluna++)
-				{
-					printf("%c", CARRO[linha][coluna]);
-				}
-			}
-			/*
-			if(posicao_carro >= 5)
-			{
-				sentido = -1;
-			}
-			else if(posicao_carro <= 0)
-			{
-				sentido = 1;
-			}
 			
-			if(sentido > 0)
-			{
-				posicao_carro++;
-			}
-			else
-			{
-				posicao_carro--;
-			}
-			*/
-			//tempo_inicio = Inicia_Cronometro();
+			
+			
+			tempo_inicio = Inicia_Cronometro();
 		}
 	}
 	
+	/*
 	do
 	{
-		/*
 		system("cls");
 		
 		printf("\n\t\t Agenda Eletrônica\n");
@@ -267,23 +225,9 @@ int main(void)
 				getch();
 			break;
 		}
-		*/
-		//while(!kbhit());
 		
-		
-		if(kbhit())
-		{
-			opcao = getch();
-			printf("\n %c = %d", opcao, opcao);
-		}
-		
-		
-		
-		
-				
-	//} while(opcao != SAIR);
-	} while(opcao != '5');
-	
+	} while(opcao != SAIR);
+	*/
 	
 }
 
