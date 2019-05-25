@@ -14,6 +14,7 @@
 
 #include "tela.h"
 #include "carro.h"
+#include "pista.h"
 #include "gotoxy.h"
 #include "caracteres.h"
 
@@ -62,6 +63,10 @@ struct struct_Tela
 } tela;
 
 
+unsigned char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
+
+
+
 /* Funções Privadas */
 
 
@@ -69,11 +74,10 @@ struct struct_Tela
 void Realiza_Inicializacao_das_Estruturas()
 {
 	Cria_Carro();
+	Cria_Pistas();
 	Cria_Placar();
 	Alterar_Placar(0);
-	//Cria_Pistas();
 	Inicializa_Telas();
-	
 }
 
 
@@ -333,12 +337,9 @@ void Exibe_Tela()
 
 
 void Atualizar_Tela()
-{
-	int linha = 0;
-	int coluna = 0;
-	
+{	
 	Limpa_Tela(tela.proxima_tela);
-	//Inserir_Pista_na_Tela();
+	Inserir_Pista_na_Tela();
 	Inserir_Placar_na_Tela();
 	Inserir_Carro_na_Tela();
 	Comparar_Tela_Atual_com_Proxima_Tela();
@@ -377,7 +378,29 @@ void Comparar_Tela_Atual_com_Proxima_Tela()
 
 
 
+void Inserir_Pista_na_Tela()
+{
+	int linha = 0;
+	int coluna = 0;
+	
+	/* Atualiza a Pista */
+	Atualiza_Pista(pista_a_ser_exibida);
+	
+	/* Copia a Pista para a Próxima Tela */
+	for(linha = 0; linha < TAMANHO_PISTA_LINHAS; linha++)
+	{
+		for(coluna = 0; coluna < TAMANHO_PISTA_COLUNAS; coluna++)
+		{
+			tela.tela[tela.proxima_tela][linha + POSICAO_PISTA_LINHA][coluna + POSICAO_PISTA_COLUNA] = pista_a_ser_exibida[linha][coluna];
+		}
+	}
+	
+}
 
+
+
+
+/* Template */
 /*
 void Montar_Proxima_Tela()
 {

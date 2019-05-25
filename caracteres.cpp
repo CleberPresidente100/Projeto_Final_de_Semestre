@@ -17,9 +17,6 @@
 
 /* Constantes */
 
-
-
-
 const unsigned char NUMERO_0[TAMANHO_CARACTER_LINHAS][TAMANHO_CARACTER_COLUNAS] =	{
 																						{' ', 219, 219, ' '},
 																						{219, ' ', ' ', 219},
