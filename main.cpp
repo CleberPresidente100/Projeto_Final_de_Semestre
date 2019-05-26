@@ -28,13 +28,15 @@
 
 
 /* Constantes */
-#define SAIR 5
+#define ESC 27
+#define SAIR '3'
 
 /* Estruturas */
 
 
 
 /* Declaração de Funções */
+void Inicia_Jogo();
 int VerificaTeclasDeMovimentacao(char tecla);
 
 
@@ -43,153 +45,45 @@ int VerificaTeclasDeMovimentacao(char tecla);
 int main(void)
 {
 	int opcao = 0;
-	int indice = 0;
-	int fim_de_jogo = 0;
-	
-	int linha = 0;
-	int coluna = 0;
-	
-	
-	int sentido = 0;
-	int auxiliar = 0;	
-	int posicao_carro = 0;
-	int movimentar_carro = 0;
-	
-	int posicao_falha_pista = -1;
-	int movimentar_falha_pista = 0;
-	
-	unsigned char tela_atual = 0;
-	
-	
-	clock_t tempo_inicio;
-	unsigned int milisegundos = 0;
-	
-	int pontuacao = 0;
-	float tempo_decorrido = 0;
-	
+	int exibir_menu = 1;
 		
 	
 	/* Permite o uso de Acentuação */
 	setlocale(LC_ALL, "ALL");
-		
-	
-	Realiza_Inicializacao_das_Estruturas();
-	Exibe_Tela(); // Exibe as Bordas da Tela
-	Atualizar_Tela();
 	
 	
-	tempo_inicio = Inicia_Cronometro();
-	while(1)
-	{		
-		milisegundos = Tempo_Cronometro(tempo_inicio);
-		
-		
-		if(milisegundos >= 10)
-		{
-			if(kbhit())
-			{
-				movimentar_carro = VerificaTeclasDeMovimentacao(getch());
-								
-				if(movimentar_carro)
-				{
-					Move_Carro(movimentar_carro);					
-					movimentar_carro = 0;
-				}
-			}
-			
-			movimentar_falha_pista++;
-			if(movimentar_falha_pista >= 5)
-			{
-				movimentar_falha_pista = 0;
-				
-				posicao_falha_pista++;
-				if(posicao_falha_pista > TAMANHO_PISTA_LINHAS)
-				{
-					posicao_falha_pista = 0;
-				}
-				
-				Atualiza_Falha_Pista(posicao_falha_pista);
-			}
-						
-			
-			tempo_decorrido += milisegundos;
-			if(tempo_decorrido >= 1000)
-			{
-				tempo_decorrido = 0;
-				
-				/* Validação da Pontuação */
-				pontuacao++;
-				if((pontuacao < 0) || (pontuacao > 999))
-				{
-					pontuacao = 0;
-				}
-				
-				Alterar_Placar(pontuacao);
-			}
-			
-			
-			fim_de_jogo = Atualizar_Tela();
-			
-			if(fim_de_jogo)
-			{
-				getch();
-				break;
-			}
-			
-			tempo_inicio = Inicia_Cronometro();
-			
-		}
-	}
-	
-	/*
 	do
 	{
-		system("cls");
+		/* Verifica se a Tela deve ser Recarregada */
+		if(exibir_menu)
+		{			
+			Realiza_Inicializacao_das_Estruturas();
+			Exibe_Tela(); // Exibe as Bordas da Tela
+			Exibe_Menu();
+			exibir_menu = 0;
+		}
 		
-		printf("\n\t\t Agenda Eletrônica\n");
-		
-		printf("\n [1] - Cadastrar");
-		printf("\n [2] - Pesquisar");
-		printf("\n [3] - Listar");
-		printf("\n [4] - Classificar");
-		printf("\n [5] - Sair");
-		printf("\n ");		
-		printf("\n Digite a sua Opção: ");
-		scanf("%d", &opcao);
+		/* Espera o Usuário Escolher uma Opção */
+		fflush(stdin);
+		opcao = getch();
 		
 		switch(opcao)
 		{
-			case 1:
-				Cadastrar(agenda);
+			case '1':
+				Inicia_Jogo();
+				exibir_menu++;
 			break;
 			
-			case 2:
-				Pesquisar(agenda);
+			case '2':
+				exibir_menu++;
 			break;
 			
-			case 3:
-				Listar(agenda);
-			break;
-			
-			case 4:
-				Classificar(agenda);
-			break;
-			
-			case 5:
-				system("cls");
-				printf("\n\n Programa Finalizado !");
-				printf("\n\n\n");
-			break;
-			
+			case SAIR:
 			default:
-				system("cls");
-				printf("\n\n Opção Inválida !!!");
-				getch();
 			break;
 		}
 		
-	} while(opcao != SAIR);
-	*/
+	}while(opcao != SAIR);
 	
 }
 
@@ -219,6 +113,99 @@ int VerificaTeclasDeMovimentacao(char tecla)
 	return 0;
 }
 
+
+
+void Inicia_Jogo()
+{
+	/* Carro */
+	int sentido = 0;
+	int posicao_carro = 0;
+	int movimentar_carro = 0;
+	
+	/* Falha na Pista que dá a impressão de Movimento */
+	int posicao_falha_pista = -1;
+	int movimentar_falha_pista = 0;
+	
+	/* Contagem de Tempo */
+	clock_t tempo_inicio;
+	unsigned int milisegundos = 0;
+	
+	/* Pontuação */
+	int pontuacao = 0;
+	float tempo_decorrido = 0; // número de segundo que será substituído pela pontuação de buracos
+	
+	/* Determina o Fim de Jogo */
+	int fim_de_jogo = 0;
+	
+	
+	
+	tempo_inicio = Inicia_Cronometro();
+	
+	while(1)
+	{		
+		milisegundos = Tempo_Cronometro(tempo_inicio);
+		
+		
+		if(milisegundos >= 10)
+		{
+			/* Movimenta o Carro */
+			if(kbhit())
+			{
+				movimentar_carro = VerificaTeclasDeMovimentacao(getch());
+								
+				if(movimentar_carro)
+				{
+					Move_Carro(movimentar_carro);					
+					movimentar_carro = 0;
+				}
+			}
+			
+			/* Movimenta Falha na Borda da Pista */
+			movimentar_falha_pista++;
+			if(movimentar_falha_pista >= 5)
+			{
+				movimentar_falha_pista = 0;
+				
+				posicao_falha_pista++;
+				if(posicao_falha_pista > TAMANHO_PISTA_LINHAS)
+				{
+					posicao_falha_pista = 0;
+				}
+				
+				Atualiza_Falha_Pista(posicao_falha_pista);
+			}
+						
+			/* Alterar Pontuação */
+			tempo_decorrido += milisegundos;
+			if(tempo_decorrido >= 1000)
+			{
+				tempo_decorrido = 0;
+				
+				/* Validação da Pontuação */
+				pontuacao++;
+				if((pontuacao < 0) || (pontuacao > 999))
+				{
+					pontuacao = 0;
+				}
+				
+				Alterar_Placar(pontuacao);
+			}
+			
+			/* Atualiza a Tela */
+			fim_de_jogo = Atualizar_Tela();
+			
+			/* Fim de Jogo */
+			if(fim_de_jogo)
+			{
+				while(getch() != ESC);				
+				break;
+			}
+			
+			tempo_inicio = Inicia_Cronometro();
+			
+		}
+	}
+}
 
 
 
