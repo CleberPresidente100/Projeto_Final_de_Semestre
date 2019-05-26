@@ -22,6 +22,7 @@
 		#define NUMERO_DE_TELAS 3
 		#define TELA_AUXILIAR (NUMERO_DE_TELAS - 1)
 		
+		#define BRANCO 32
 		#define ESPESSURA_BORDA_TELA 1
 		#define TAMANHO_TELA_LINHAS 30
 		#define TAMANHO_TELA_COLUNAS 80
@@ -69,6 +70,7 @@
 		
 		/* Pista */
 		void Inserir_Pista_na_Tela();
+		void Atualiza_Falha_Pista(int linha);
 	
 #endif
 
