@@ -19,6 +19,33 @@
 
 /* Constantes */
 
+#define QUANTIDADE_MAXIMA_DE_BURACOS 3
+
+const unsigned char BURACO[3][3][3] =	{
+											{
+												{' ', ' ', ' '},
+												{' ', 219, ' '},
+												{' ', ' ', ' '}
+											},
+											{
+												{' ', 219, 219},
+												{' ', 219, 219},
+												{' ', ' ', ' '}
+											},
+											{
+												{' ', 219, ' '},
+												{219, 177, 219},
+												{' ', 219, ' '}
+											}
+										};
+
+
+/* Estruturas */
+struct struct_Buraco
+{
+	int posicao_buracos_linha[QUANTIDADE_MAXIMA_DE_BURACOS];
+	int posicao_buracos_coluna[QUANTIDADE_MAXIMA_DE_BURACOS];
+} buraco;
 
 /* Variáveis Globais */
 	unsigned char reta[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
@@ -29,7 +56,16 @@
 
 void Cria_Pistas()
 {
+	int indice = 0;
+	
 	Cria_Pista_Reta();
+	
+	
+	for(indice = 0; indice < QUANTIDADE_MAXIMA_DE_BURACOS; indice++)
+	{
+		//buraco.posicao_buracos_coluna[indice] = 0;
+	}
+	
 }
 
 
@@ -78,6 +114,7 @@ void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLU
 		{
 			if(linha != pista_linha_falha)
 			{
+				/* Temporário até as curvas serem implementadas */
 				pista[linha][coluna] = reta[linha][coluna];
 			}
 			else
@@ -88,6 +125,29 @@ void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLU
 	}
 }
 
+
+
+int Verifica_Colisao_Pista(int posicao_carro)
+{
+	/* Temporário até as curvas serem implementadas */
+	if	(
+			(posicao_carro == -22) ||
+			(posicao_carro == 23)
+		)
+	{
+		return 1;
+	}
+	
+	return 0;
+}
+
+
+
+int Verifica_Colisao_Buraco(int posicao_carro)
+{
+	/* Temporário até as curvas serem implementadas */
+	return 0;
+}
 
 
 

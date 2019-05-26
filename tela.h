@@ -60,12 +60,12 @@
 		void Inicializa_Telas();
 		void Limpa_Tela(unsigned char indice_tela);
 		void Exibe_Tela();
-		void Atualizar_Tela();
+		int  Atualizar_Tela();
 		void Comparar_Tela_Atual_com_Proxima_Tela();
 	
 		/* Carro */
 		void Cria_Carro();
-		void Inserir_Carro_na_Tela();
+		int  Inserir_Carro_na_Tela();
 		void Move_Carro(int movimentar_carro);
 		
 		/* Pista */

@@ -33,6 +33,9 @@ const unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] ={
 																			{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
 																		};
 
+
+
+
 /* Estruturas */
 
 struct struct_Carro
@@ -62,7 +65,7 @@ struct struct_Tela
 	unsigned char tela[NUMERO_DE_TELAS][TAMANHO_TELA_LINHAS][TAMANHO_TELA_COLUNAS];
 } tela;
 
-
+int fim_de_jogo;
 int pista_linha_falha;
 unsigned char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
 
@@ -108,6 +111,8 @@ void Cria_Carro()
 			carro.carro[linha][coluna] = auxiliar[linha][coluna];
 		}
 	}
+	
+	carro.posicao_atual_carro = 0;
 }
 
 
@@ -119,13 +124,11 @@ void Move_Carro(int movimentar_carro)
 
 
 
-void Inserir_Carro_na_Tela()
+int Inserir_Carro_na_Tela()
 {
 	int linha = 0;
 	int coluna = 0;
-	
-	//int pos_top_left_linha = TAMANHO_TELA_LINHAS - ESPESSURA_BORDA_TELA - TAMANHO_CARRO_LINHAS;
-	//int pos_top_left_coluna = (TAMANHO_TELA_COLUNAS / 2) - (TAMANHO_CARRO_COLUNAS / 2);
+	//int fim_de_jogo = 0;
 	
 		
 	for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
@@ -133,8 +136,31 @@ void Inserir_Carro_na_Tela()
 		for(coluna = 0; coluna < TAMANHO_CARRO_COLUNAS; coluna++)
 		{
 			tela.tela[tela.proxima_tela][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] = carro.carro[linha][coluna];
+			
+			/* Verifica se o Carro Bateu em Algo */	/*		
+			if	(
+					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != 0) &&
+					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != BRANCO) &&
+					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != carro.carro[linha][coluna])
+					 
+				)*/
+			{
+				fim_de_jogo++;
+			}
 		}
-	}	
+	}
+	
+	
+	/* Verifica se o Carro Bateu em Algo */
+	if	(
+			Verifica_Colisao_Buraco(carro.posicao_atual_carro) ||
+			Verifica_Colisao_Pista(carro.posicao_atual_carro)
+		)
+	{
+		return 1;
+	}
+	
+	return 0;	
 }
 
 
@@ -338,12 +364,19 @@ void Exibe_Tela()
 
 
 
-void Atualizar_Tela()
-{	
+int Atualizar_Tela()
+{
+	int fim_de_jogo = 0;
+	
 	Limpa_Tela(tela.proxima_tela);
 	Inserir_Pista_na_Tela();
 	Inserir_Placar_na_Tela();
-	Inserir_Carro_na_Tela();
+	fim_de_jogo = Inserir_Carro_na_Tela();
+	if(fim_de_jogo)
+	{
+		//Inserir_Mensagem_Derrota();
+	}
+	
 	Comparar_Tela_Atual_com_Proxima_Tela();
 	Exibe_Tela();
 	
@@ -351,6 +384,7 @@ void Atualizar_Tela()
 	tela.tela_atual		= (~tela.tela_atual) & 0x01;
 	tela.proxima_tela	= (~tela.proxima_tela) & 0x01;
 	
+	return fim_de_jogo;
 }
 
 
@@ -407,9 +441,6 @@ void Inserir_Pista_na_Tela()
 	}
 	
 }
-
-
-
 
 
 
