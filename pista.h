@@ -22,6 +22,8 @@
 	/* Funções */
 	void Cria_Pistas();
 	void Cria_Pista_Reta();
+	int Verifica_Colisao_Pista(int posicao_carro);
+	int Verifica_Colisao_Buraco(int posicao_carro);
 	void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS], int pista_linha_falha);
 	
 #endif

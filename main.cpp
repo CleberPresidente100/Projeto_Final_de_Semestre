@@ -13,10 +13,10 @@
 /* Inclusão das Bibliotecas */
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> /* Biblioteca com Funções para Strings */
-#include <conio.h> /* Biblioteca da função getch */
+#include <string.h>	/* Biblioteca com Funções para Strings */
+#include <conio.h>	/* Biblioteca da função getch */
 #include <locale.h>	/* Biblioteca para Acentuação */
-#include <time.h>/* Biblioteca para Data e Hora */
+#include <time.h>	/* Biblioteca para Data e Hora */
 
 
 #include "tela.h"
@@ -29,35 +29,6 @@
 
 /* Constantes */
 #define SAIR 5
-#define NUM_CADASTROS 3
-#define TAMANHO_NOME 100
-
-#define ASCII_1 176
-#define ASCII_2 177
-#define ASCII_3 178
-
-#define ASCII_11 219
-#define ASCII_12 220
-#define ASCII_13 221
-#define ASCII_14 222
-#define ASCII_15 223
-#define ASCII_16 254
-
-
-
-
-
-
-
-const unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] ={
-																			{221, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 222},
-																			{223, 223, 223, 223, 219, 219, 219, 219, 219, 219, 219, 223, 223, 223, 223},
-																			{177, 177, 177, ' ', ' ', ' ', 219, 219, 219, ' ', ' ', ' ', 177, 177, 177},
-																			{177, 177, 177, 220, 219, 219, 219, 219, 219, 219, 219, 220, 177, 177, 177},
-																			{177, 177, 177, 223, 219, 219, 219, 219, 219, 219, 219, 223, 177, 177, 177},
-																			{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
-																		};
-
 
 /* Estruturas */
 
@@ -72,7 +43,8 @@ int VerificaTeclasDeMovimentacao(char tecla);
 int main(void)
 {
 	int opcao = 0;
-	int indice = 0;	
+	int indice = 0;
+	int fim_de_jogo = 0;
 	
 	int linha = 0;
 	int coluna = 0;
@@ -112,7 +84,7 @@ int main(void)
 		milisegundos = Tempo_Cronometro(tempo_inicio);
 		
 		
-		if(milisegundos > 10)
+		if(milisegundos >= 10)
 		{
 			if(kbhit())
 			{
@@ -140,16 +112,29 @@ int main(void)
 			}
 						
 			
-			tempo_decorrido += 0.01;
-			if(tempo_decorrido >= 1)
+			tempo_decorrido += milisegundos;
+			if(tempo_decorrido >= 1000)
 			{
-				pontuacao++;
 				tempo_decorrido = 0;
+				
+				/* Validação da Pontuação */
+				pontuacao++;
+				if((pontuacao < 0) || (pontuacao > 999))
+				{
+					pontuacao = 0;
+				}
+				
 				Alterar_Placar(pontuacao);
 			}
 			
 			
-			Atualizar_Tela();
+			fim_de_jogo = Atualizar_Tela();
+			
+			if(fim_de_jogo)
+			{
+				getch();
+				break;
+			}
 			
 			tempo_inicio = Inicia_Cronometro();
 			
