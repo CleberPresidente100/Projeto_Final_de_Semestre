@@ -21,6 +21,7 @@
 
 #include "tela.h"
 #include "carro.h"
+#include "pista.h"
 #include "gotoxy.h"
 #include "milisegundos.h"
 #include "caracteres.h"
@@ -70,7 +71,6 @@ int VerificaTeclasDeMovimentacao(char tecla);
 /* Função Main */
 int main(void)
 {
-	int movimentar_carro = 0;
 	int opcao = 0;
 	int indice = 0;	
 	
@@ -81,6 +81,10 @@ int main(void)
 	int sentido = 0;
 	int auxiliar = 0;	
 	int posicao_carro = 0;
+	int movimentar_carro = 0;
+	
+	int posicao_falha_pista = -1;
+	int movimentar_falha_pista = 0;
 	
 	unsigned char tela_atual = 0;
 	
@@ -88,63 +92,14 @@ int main(void)
 	clock_t tempo_inicio;
 	unsigned int milisegundos = 0;
 	
+	int pontuacao = 0;
+	float tempo_decorrido = 0;
+	
+		
 	
 	/* Permite o uso de Acentuação */
 	setlocale(LC_ALL, "ALL");
 		
-		
-	
-		
-		
-	/* Exibe Carro */
-	/*
-	for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
-	{
-		printf("\n");
-		for(coluna = 0; coluna < TAMANHO_CARRO_COLUNAS; coluna++)
-		{
-			printf("%c", CARRO[linha][coluna]);
-		}
-	}
-	*/
-	
-	
-	
-	/*
-	printf("\n\n\n");
-	Exibir_Numero(0);printf("\n");
-	Exibir_Numero(1);printf("\n");
-	Exibir_Numero(2);printf("\n");
-	Exibir_Numero(3);printf("\n");
-	Exibir_Numero(4);printf("\n");
-	Exibir_Numero(5);printf("\n");
-	Exibir_Numero(6);printf("\n");
-	Exibir_Numero(7);printf("\n");
-	Exibir_Numero(8);printf("\n");
-	Exibir_Numero(9);printf("\n");
-	*/
-	
-	//printf("\n");
-	//Cria_Placar();
-	//Alterar_Placar(789);
-	//Exibe_Placar();
-	
-	/* Pista */
-	/*
-	printf("\n%c%c", 177, 219);
-	printf("\n%c%c", 219, 177);
-	printf("\n%c%c", 177, 219);
-	printf("\n%c%c", 219, 177);
-	printf("\n%c%c", 177, 219);
-	printf("\n%c%c", 219, 177);
-	printf("\n%c%c", 177, 219);
-	printf("\n%c%c", 219, 177);
-	printf("\n%c%c", 177, 219);
-	printf("\n%c%c", 219, 177);
-	
-	getch();
-	*/
-	
 	
 	Realiza_Inicializacao_das_Estruturas();
 	Exibe_Tela(); // Exibe as Bordas da Tela
@@ -162,20 +117,42 @@ int main(void)
 			if(kbhit())
 			{
 				movimentar_carro = VerificaTeclasDeMovimentacao(getch());
-				
+								
 				if(movimentar_carro)
 				{
-					Move_Carro(movimentar_carro);
-					Atualizar_Tela();
+					Move_Carro(movimentar_carro);					
 					movimentar_carro = 0;
 				}
 			}
 			
+			movimentar_falha_pista++;
+			if(movimentar_falha_pista >= 5)
+			{
+				movimentar_falha_pista = 0;
+				
+				posicao_falha_pista++;
+				if(posicao_falha_pista > TAMANHO_PISTA_LINHAS)
+				{
+					posicao_falha_pista = 0;
+				}
+				
+				Atualiza_Falha_Pista(posicao_falha_pista);
+			}
+						
+			
+			tempo_decorrido += 0.01;
+			if(tempo_decorrido >= 1)
+			{
+				pontuacao++;
+				tempo_decorrido = 0;
+				Alterar_Placar(pontuacao);
+			}
 			
 			
-			
+			Atualizar_Tela();
 			
 			tempo_inicio = Inicia_Cronometro();
+			
 		}
 	}
 	

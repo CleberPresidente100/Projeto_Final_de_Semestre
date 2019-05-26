@@ -66,7 +66,7 @@ void Cria_Pista_Reta()
 
 
 
-void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS])
+void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS], int pista_linha_falha)
 {
 	int linha = 0;
 	int coluna = 0;
@@ -76,10 +76,21 @@ void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLU
 	{
 		for(coluna = 0; coluna < TAMANHO_PISTA_COLUNAS; coluna++)
 		{
-			pista[linha][coluna] = reta[linha][coluna];
+			if(linha != pista_linha_falha)
+			{
+				pista[linha][coluna] = reta[linha][coluna];
+			}
+			else
+			{
+				pista[linha][coluna] = 0;
+			}
 		}
 	}
 }
+
+
+
+
 
 
 

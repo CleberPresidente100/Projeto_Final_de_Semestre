@@ -63,6 +63,7 @@ struct struct_Tela
 } tela;
 
 
+int pista_linha_falha;
 unsigned char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
 
 
@@ -73,6 +74,7 @@ unsigned char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
 /* GERAIS */
 void Realiza_Inicializacao_das_Estruturas()
 {
+	pista_linha_falha = -1;
 	Cria_Carro();
 	Cria_Pistas();
 	Cria_Placar();
@@ -287,7 +289,7 @@ void Limpa_Tela(unsigned char indice_tela)
 	{
 		for(coluna = 0; coluna < TAMANHO_TELA_COLUNAS; coluna++)
 		{
-			tela.tela[indice_tela][linha][coluna] = 32; // Caractere Espaço
+			tela.tela[indice_tela][linha][coluna] = BRANCO; // Caractere Espaço
 		}
 	}
 	
@@ -362,10 +364,19 @@ void Comparar_Tela_Atual_com_Proxima_Tela()
 	for(linha = 0; linha < TAMANHO_TELA_LINHAS; linha++)
 	{
 		for(coluna = 0; coluna < TAMANHO_TELA_COLUNAS; coluna++)
-		{				
-			if	(tela.tela[tela.tela_atual][linha][coluna] != tela.tela[tela.proxima_tela][linha][coluna])
+		{
+			if(tela.tela[tela.tela_atual][linha][coluna] != tela.tela[tela.proxima_tela][linha][coluna])
 			{
-				tela.tela[TELA_AUXILIAR][linha][coluna] = tela.tela[tela.proxima_tela][linha][coluna];
+				/* Se na Tela Atual existe um Caractere e na Próxima Tela ele foi Substituido
+				por um Caractere Vazio, significa que este Caractere deve ser Apagado. */
+				if((tela.tela[tela.tela_atual][linha][coluna] != 0) && (tela.tela[tela.proxima_tela][linha][coluna] == 0))
+				{
+					tela.tela[TELA_AUXILIAR][linha][coluna] = BRANCO;
+				}
+				else
+				{
+					tela.tela[TELA_AUXILIAR][linha][coluna] = tela.tela[tela.proxima_tela][linha][coluna];
+				}
 			}
 			else
 			{
@@ -383,8 +394,8 @@ void Inserir_Pista_na_Tela()
 	int linha = 0;
 	int coluna = 0;
 	
-	/* Atualiza a Pista */
-	Atualiza_Pista(pista_a_ser_exibida);
+	/* Atualiza a Pista */	
+	Atualiza_Pista(pista_a_ser_exibida, pista_linha_falha);
 	
 	/* Copia a Pista para a Próxima Tela */
 	for(linha = 0; linha < TAMANHO_PISTA_LINHAS; linha++)
@@ -397,6 +408,15 @@ void Inserir_Pista_na_Tela()
 	
 }
 
+
+
+
+
+
+void Atualiza_Falha_Pista(int linha)
+{
+	pista_linha_falha = linha;
+}
 
 
 

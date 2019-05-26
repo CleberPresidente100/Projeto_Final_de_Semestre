@@ -22,7 +22,7 @@
 	/* Funções */
 	void Cria_Pistas();
 	void Cria_Pista_Reta();
-	void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS]);
+	void Atualiza_Pista(unsigned char pista[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS], int pista_linha_falha);
 	
 #endif
 
