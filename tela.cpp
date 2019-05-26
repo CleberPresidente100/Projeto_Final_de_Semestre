@@ -11,6 +11,7 @@
 
 /* Bibliotecas */
 #include <stdio.h>
+#include <locale.h>	/* Biblioteca para Acentuação */
 
 #include "tela.h"
 #include "carro.h"
@@ -24,11 +25,18 @@
 #define POSICAO_PLACAR_DIGITO_2 5
 #define POSICAO_PLACAR_DIGITO_3 10
 
-#define DERRORA_LINHA (TAMANHO_PLACAR_LINHAS + 1)
-#define DERRORA_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 13)
+#define DERROTA_NUMERO_LINHAS 9
+#define DERROTA_NUMERO_COLUNAS 29
+#define DERROTA_LINHA (TAMANHO_PLACAR_LINHAS + 1)
+#define DERROTA_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 13)
 
+#define NOME_DO_JOGO_NUMERO_LINHAS 19
+#define NOME_DO_JOGO_NUMERO_COLUNAS 27
 #define NOME_DO_JOGO_LINHA (TAMANHO_PLACAR_LINHAS - 3)
 #define NOME_DO_JOGO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 11)
+
+#define ARQUIVO_RECORDS "records.txt"
+
 
 
 
@@ -41,40 +49,62 @@ const unsigned char CARRO[TAMANHO_CARRO_LINHAS][TAMANHO_CARRO_COLUNAS] ={
 																			{177, 177, 177, ' ', 223, 223, 223, 223, 223, 223, 223, ' ', 177, 177, 177}
 																		};
 
-const unsigned char DERROTA[9][29] =	{
-										{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
-										{186, 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, 219, ' ', ' ', 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, 219, 219, ' ', 219, 219, 219, 186},
-										{186, 219, ' ', 219, ' ', 219, ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
-										{186, 219, ' ', 219, ' ', 219, 219, 219, ' ', 219, 219, ' ', ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, 219, 219, 186},
-										{186, 219, ' ', 219, ' ', 219, ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
-										{186, 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, 219, 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
-										{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188},
-										{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-										{' ', ' ', ' ', ' ', ' ', 'A', 'p', 'e', 'r', 't', 'e', ' ', 'E', 'S', 'C', ' ', 'p', 'a', 'r', 'a', ' ', 'S', 'a', 'i', 'r', ' ', ' ', ' ', ' '}
-									};
 
-const unsigned char NOME_DO_JOGO[18][27] =	{
-											{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
-											{186, ' ', ' ', ' ', 223, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', ' ', 223, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', 219, 219, ' ', ' ', ' ', 219, ' ', ' ', 186},
-											{186, ' ', 219, ' ', ' ', ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 186},
-											{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', 186},
-											{186, ' ', 219, ' ', ' ', ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 186},
-											{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, 219, ' ', ' ', ' ', 219, ' ', ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 186},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188},
-											{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-											{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', '1', ' ', ' ', ' ', 'J', 'o', 'g', 'a', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', '2', ' ', '-', ' ', 'R', 'e', 'c', 'o', 'r', 'd', 'e', 's', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', '3', ' ', ' ', ' ', 'S', 'a', 'i', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
-											{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188}
-										};
+const unsigned char DERROTA[DERROTA_NUMERO_LINHAS][DERROTA_NUMERO_COLUNAS] =	{
+																					{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
+																					{186, 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, 219, ' ', ' ', 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, 219, 219, ' ', 219, 219, 219, 186},
+																					{186, 219, ' ', 219, ' ', 219, ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
+																					{186, 219, ' ', 219, ' ', 219, 219, 219, ' ', 219, 219, ' ', ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, 219, 219, 186},
+																					{186, 219, ' ', 219, ' ', 219, ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
+																					{186, 219, 219, ' ', ' ', 219, 219, 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, 219, 219, ' ', ' ', 219, ' ', ' ', 219, ' ', 219, 186},
+																					{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188},
+																					{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+																					{' ', ' ', ' ', ' ', ' ', 'A', 'p', 'e', 'r', 't', 'e', ' ', 'E', 'S', 'C', ' ', 'p', 'a', 'r', 'a', ' ', 'S', 'a', 'i', 'r', ' ', ' ', ' ', ' '}
+																				};
 
 
+const unsigned char NOME_DO_JOGO[NOME_DO_JOGO_NUMERO_LINHAS][NOME_DO_JOGO_NUMERO_COLUNAS] =	{
+																								{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
+																								{186, ' ', ' ', ' ', 223, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', 223, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', 219, 219, ' ', ' ', ' ', 219, ' ', ' ', 186},
+																								{186, ' ', 219, ' ', ' ', ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 186},
+																								{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, 219, ' ', ' ', 219, ' ', 219, ' ', 186},
+																								{186, ' ', 219, ' ', ' ', ' ', ' ', ' ', ' ', ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 219, ' ', 186},
+																								{186, ' ', 219, 219, 219, ' ', ' ', ' ', ' ', ' ', 219, 219, ' ', ' ', ' ', 219, ' ', ' ', 219, ' ', 219, ' ', ' ', 219, ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188},
+																								{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+																								{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', '1', ' ', '-', ' ', 'J', 'o', 'g', 'a', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', '2', ' ', '-', ' ', 'R', 'e', 'c', 'o', 'r', 'd', 'e', 's', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', '3', ' ', '-', ' ', 'S', 'o', 'b', 'r', 'e', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', '4', ' ', '-', ' ', 'S', 'a', 'i', 'r', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{186, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 186},
+																								{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188}
+																							};
+
+
+/*
+const unsigned char SOBRE[10][TAMANHO_PISTA_COLUNAS] =	{
+															{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{186, 186},
+															{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188}
+														}
+
+
+
+const unsigned char RECORDES[14][NOME_DO_JOGO_NUMERO_COLUNAS] =	{
+*/
 
 /* Estruturas */
 
@@ -496,11 +526,11 @@ void Inserir_Mensagem_Derrota()
 	int coluna = 0;
 	
 	
-	for(linha = 0; linha < 9; linha++)
+	for(linha = 0; linha < DERROTA_NUMERO_LINHAS; linha++)
 	{
-		for(coluna = 0; coluna < 29; coluna++)
+		for(coluna = 0; coluna < DERROTA_NUMERO_COLUNAS; coluna++)
 		{
-			tela.tela[tela.proxima_tela][linha + DERRORA_LINHA][coluna + DERRORA_COLUNA] = DERROTA[linha][coluna];
+			tela.tela[tela.proxima_tela][linha + DERROTA_LINHA][coluna + DERROTA_COLUNA] = DERROTA[linha][coluna];
 		}
 	}
 	
@@ -513,9 +543,9 @@ void Inserir_Nome_do_Jogo()
 	int coluna = 0;
 	
 	
-	for(linha = 0; linha < 18; linha++)
+	for(linha = 0; linha < NOME_DO_JOGO_NUMERO_LINHAS; linha++)
 	{
-		for(coluna = 0; coluna < 27; coluna++)
+		for(coluna = 0; coluna < NOME_DO_JOGO_NUMERO_COLUNAS; coluna++)
 		{
 			tela.tela[tela.proxima_tela][linha + NOME_DO_JOGO_LINHA][coluna + NOME_DO_JOGO_COLUNA] = NOME_DO_JOGO[linha][coluna];
 		}
@@ -524,7 +554,8 @@ void Inserir_Nome_do_Jogo()
 }
 
 
-void Exibe_Menu()
+
+void Exibe_Menu_Principal()
 {
 	Inserir_Pista_na_Tela();
 	Inserir_Placar_na_Tela();
@@ -533,6 +564,154 @@ void Exibe_Menu()
 	Comparar_Tela_Atual_com_Proxima_Tela();
 	Exibe_Tela();
 }
+
+
+
+void Exibe_Menu_Recordes()
+{
+	Inserir_Pista_na_Tela();
+	Inserir_Placar_na_Tela();
+	Inserir_Carro_na_Tela();
+	Inserir_Recordes();
+	Comparar_Tela_Atual_com_Proxima_Tela();
+	Exibe_Tela();
+}
+
+
+
+void Exibe_Menu_Sobre()
+{
+	Inserir_Pista_na_Tela();
+	Inserir_Carro_na_Tela();	
+	Comparar_Tela_Atual_com_Proxima_Tela();
+	Exibe_Tela();
+	Inserir_Texto_Sobre();
+}
+
+
+
+void Inserir_Recordes()
+{
+	int linha = 0;
+	int coluna = 0;
+	
+	
+	for(linha = 0; linha < TAMANHO_TELA_LINHAS; linha++)
+	{
+		for(coluna = 0; coluna < TAMANHO_TELA_COLUNAS; coluna++)
+		{
+		}
+	}
+	
+}
+
+
+
+void Inserir_Texto_Sobre()
+{
+	int linha = 0;
+	int coluna = 0;
+	int indice = 0;
+	
+	int linha_superior = 2;
+	int linha_inferior = linha_superior + 15;
+	int coluna_esquerda = 5;
+	int coluna_direita = coluna_esquerda + 70;
+	
+	const unsigned char Texto [15][150] = {  //1234567890123456789012345678901234567890123456789012345678901234567890
+											"                         Nome do Jogo: É Duro                         \0",
+											"                  Desenvolvedor: Cleber da Silva Melo                 \0",
+											"                                                                      \0",
+											"                             Sobre o Jogo:                            \0",
+											" Este é um projeto do Final do Semestre onde aplicaremos todos        \0"
+											" os conhecimentos adquiridos em Linguagem C através das matérias      \0",
+											" \"Algoritmos e Técnicas de Programação\" e                           \0", 
+											" \"Algoritmos e Estrutura de Dados\".                                 \0",
+											"                                                                      \0",
+											" O objetivo deste projeto é criar um jogo similar ao Enduro do Atari  \0",
+											" utilizando apenas os caracteres da tabela ASCII extendida.           \0",
+											"                                                                      \0",
+											" Obs.: Este projeto deve ser realizado em apenas 6 dias.              \0",
+											"                                                                      \0",
+											" Pressione ESC para Retornar ao Menu.                                 \0"
+										};
+	
+	
+	
+	/* Permite o uso de Acentuação */
+	setlocale(LC_ALL, "Portuguese");
+	
+		
+	/* Imprime Texto */
+	for(linha = 0; linha < 15; linha++)
+	{
+		gotoxy(linha + linha_superior + 1, coluna_esquerda + 1);
+		
+		for(coluna = 0; coluna < 150; coluna++)
+		{
+			if(Texto[linha][coluna] == '\0')
+			{
+				break;
+			}
+			
+			printf("%c", Texto[linha][coluna]);
+		}
+	}
+	
+	
+	
+	/* Permite o uso de Caracteres da Tabela ASCII Extendida */
+	setlocale(LC_ALL, "English");
+	
+	/* Bordas Superiores */
+		/* Imprime Canto Borda Superior Esquerda */
+		gotoxy(linha_superior, coluna_esquerda);
+		printf("%c", 201);
+		
+		/* Imprime Centro Borda Superior */
+		for(indice = 0; indice < 69; indice++)
+		{
+			printf("%c", 205);
+		}
+		
+		/* Imprime Canto Borda Superior Direita */
+		printf("%c", 187);
+	
+	
+	/* Bordas Laterais */
+		/* Imprime Bordas Laterais */
+		for(indice = 0; indice < 15; indice++)
+		{
+			/* Borda Esquerda */
+			gotoxy(linha_superior + 1 + indice, coluna_esquerda);
+			printf("%c", 186);
+			
+			/* Borda Direita */
+			gotoxy(linha_superior + 1 + indice, coluna_direita);
+			printf("%c", 186);
+		}
+	
+	
+	/* Bordas Inferiores */
+		/* Imprime Canto Borda Inferior Esquerda */
+		gotoxy(linha_inferior, coluna_esquerda);
+		printf("%c", 200);
+		
+		/* Imprime Centro Borda Inferior */
+		for(indice = 0; indice < 69; indice++)
+		{
+			printf("%c", 205);
+		}
+		
+		/* Imprime Canto Borda Inferior Direita */
+		printf("%c", 188);
+	
+	
+	
+		
+}
+
+
 
 /* Template */
 /*

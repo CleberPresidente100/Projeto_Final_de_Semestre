@@ -26,4 +26,6 @@ https://previews.123rf.com/images/i3alda/i3alda1608/i3alda160800068/61847382-pix
 Manipulaçao de Bits
 https://dev.to/noah11012/bitwise-operations-in-cc-3j3k
 
+Função setlocale
+http://www.cplusplus.com/reference/clocale/setlocale/
 */
