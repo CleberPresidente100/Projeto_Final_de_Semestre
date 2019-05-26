@@ -48,7 +48,11 @@
 	
 	/* Funções */
 		/* Gerais */
-		void Exibe_Menu();
+		void Exibe_Menu_Principal();
+		void Exibe_Menu_Recordes();
+		void Exibe_Menu_Sobre();
+		void Inserir_Recordes();
+		void Inserir_Texto_Sobre();
 		void Inserir_Nome_do_Jogo();
 		void Inserir_Mensagem_Derrota();
 		void Realiza_Inicializacao_das_Estruturas();
