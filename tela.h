@@ -48,6 +48,9 @@
 	
 	/* Funções */
 		/* Gerais */
+		void Exibe_Menu();
+		void Inserir_Nome_do_Jogo();
+		void Inserir_Mensagem_Derrota();
 		void Realiza_Inicializacao_das_Estruturas();
 	
 		/* Placar */
