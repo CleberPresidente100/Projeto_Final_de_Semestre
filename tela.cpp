@@ -12,6 +12,7 @@
 /* Bibliotecas */
 #include <stdio.h>
 #include <locale.h>	/* Biblioteca para Acentuação */
+#include <string.h>
 
 #include "tela.h"
 #include "carro.h"
@@ -21,21 +22,30 @@
 
 
 /* Constantes */
-#define POSICAO_PLACAR_DIGITO_1 0
-#define POSICAO_PLACAR_DIGITO_2 5
-#define POSICAO_PLACAR_DIGITO_3 10
+/* PLACAR */
+	#define POSICAO_PLACAR_DIGITO_1 0
+	#define POSICAO_PLACAR_DIGITO_2 5
+	#define POSICAO_PLACAR_DIGITO_3 10
 
-#define DERROTA_NUMERO_LINHAS 9
-#define DERROTA_NUMERO_COLUNAS 29
-#define DERROTA_LINHA (TAMANHO_PLACAR_LINHAS + 1)
-#define DERROTA_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 13)
+/* TABELA DERROTA */
+	#define DERROTA_NUMERO_LINHAS 9
+	#define DERROTA_NUMERO_COLUNAS 29
+	#define DERROTA_LINHA (TAMANHO_PLACAR_LINHAS + 1)
+	#define DERROTA_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 13)
 
-#define NOME_DO_JOGO_NUMERO_LINHAS 19
-#define NOME_DO_JOGO_NUMERO_COLUNAS 27
-#define NOME_DO_JOGO_LINHA (TAMANHO_PLACAR_LINHAS - 3)
-#define NOME_DO_JOGO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 11)
+/* TABELA COM O NOME DO JOGO E MENU */
+	#define NOME_DO_JOGO_NUMERO_LINHAS 19
+	#define NOME_DO_JOGO_NUMERO_COLUNAS 27
+	#define NOME_DO_JOGO_LINHA (TAMANHO_PLACAR_LINHAS - 3)
+	#define NOME_DO_JOGO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 11)
 
-#define ARQUIVO_RECORDS "records.txt"
+/* TABELA DE RANKING */
+	#define ARQUIVO_RECORDS "records.txt"
+	
+	#define RANKING_LINHAS 17
+	#define RANKING_COLUNAS 40
+	#define RANKING_POSICAO_LINHA 3
+	#define RANKING_POSICAO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - (RANKING_COLUNAS / 2) + 2)
 
 
 
@@ -87,24 +97,11 @@ const unsigned char NOME_DO_JOGO[NOME_DO_JOGO_NUMERO_LINHAS][NOME_DO_JOGO_NUMERO
 
 
 /*
-const unsigned char SOBRE[10][TAMANHO_PISTA_COLUNAS] =	{
-															{201, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 187},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{186, 186},
-															{200, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 205, 188}
-														}
-
-
-
-const unsigned char RECORDES[14][NOME_DO_JOGO_NUMERO_COLUNAS] =	{
+{201, 205, 187},
+{186, 186},
+{200, 205,188}
 */
+
 
 /* Estruturas */
 
@@ -132,12 +129,12 @@ struct struct_Tela
 		
 	unsigned char tela_atual;
 	unsigned char proxima_tela;
-	unsigned char tela[NUMERO_DE_TELAS][TAMANHO_TELA_LINHAS][TAMANHO_TELA_COLUNAS];
+	char tela[NUMERO_DE_TELAS][TAMANHO_TELA_LINHAS][TAMANHO_TELA_COLUNAS];
 } tela;
 
 int fim_de_jogo;
 int pista_linha_falha;
-unsigned char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
+char pista_a_ser_exibida[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
 
 
 
@@ -594,14 +591,128 @@ void Inserir_Recordes()
 {
 	int linha = 0;
 	int coluna = 0;
+		
+	int exibe_ranking_zerado = 0;
+	int quantidade_de_linhas = 0;
+	
+	FILE * Arquivo;	
+	fpos_t inicio_do_arquivo;
+	char linha_arquivo [100];
 	
 	
-	for(linha = 0; linha < TAMANHO_TELA_LINHAS; linha++)
-	{
-		for(coluna = 0; coluna < TAMANHO_TELA_COLUNAS; coluna++)
+	char tela_ranking [RANKING_LINHAS][RANKING_COLUNAS];
+		
+	
+	/* Criação da Tabela de Raking em Branco e com Bordas */
+	
+		/* Apaga a Tabela do Ranking e Coloca Bordas */
+		for(linha = 0; linha < RANKING_LINHAS; linha++)
 		{
+			for(coluna = 0; coluna < RANKING_COLUNAS; coluna++)
+			{
+				if((linha == 0) || (linha == RANKING_LINHAS - 1))
+				{
+					tela_ranking[linha][coluna] = 205;
+				}
+				else if((coluna == 0) || (coluna == RANKING_COLUNAS - 1))
+				{
+					tela_ranking[linha][coluna] = 186;
+				}
+				else
+				{
+					tela_ranking[linha][coluna] = BRANCO;
+				}
+			}
+		}
+		
+		/* Caracteres das Bordas */
+		/*
+		{201, 205, 187},
+		{186, 186},
+		{200, 205,188}
+		*/
+	
+		/* Acrescenta os Vértices das Bordas */
+		tela_ranking[0][0]										= 201;
+		tela_ranking[0][RANKING_COLUNAS - 1]					= 187;	
+		tela_ranking[RANKING_LINHAS - 1][0]						= 200;
+		tela_ranking[RANKING_LINHAS - 1][RANKING_COLUNAS - 1]	= 188;
+	
+	
+	/* Abre Arquivo para Leitura */
+	Arquivo = fopen (ARQUIVO_RECORDS , "r");
+	if (Arquivo == NULL)
+	{		
+		/* Se o Arquivo não existir, cria um novo */
+		Arquivo = fopen (ARQUIVO_RECORDS , "w+");
+		
+		if(Arquivo != NULL)
+		{	
+			fgetpos (Arquivo, &inicio_do_arquivo);
+			
+			     //1234567890123456789012345678901234567890
+			fputs("               Ranking                \n", Arquivo);
+			fputs("", Arquivo);
+			fputs("001 - Cleber\n", Arquivo);
+			fputs("002 - Presidente\n", Arquivo);
+			fputs("003 - 100%\n", Arquivo);
+			fputs("004 - Cleber\n", Arquivo);
+			fputs("005 - Presidente\n", Arquivo);
+			fputs("006 - 100%\n", Arquivo);
+			fputs("007 - Cleber\n", Arquivo);
+			fputs("008 - Presidente\n", Arquivo);
+			fputs("009 - 100%\n", Arquivo);
+			fputs("010 - Cleber\n", Arquivo);
+			fputs("\n", Arquivo);
+			fputs("Pressione ESC para Retornar ao Menu.\n", Arquivo);
+			
+			/* Salva Informações do Buffer no Arquivo */
+			fflush(Arquivo);
+			
+			/* Prepera Arquivo para a Leitura */
+			rewind(Arquivo);
+			//fsetpos (Arquivo, &inicio_do_arquivo);
 		}
 	}
+	
+	
+	/*	Tanto a Linha quanto a Coluna começam em 2 pois na posição 0 é colocada a borda
+	e a posição 1 é o espaçamento entre a borda e o texto. */
+	for(linha = 2; linha < RANKING_LINHAS - 1; linha++)
+	{
+		/* Lê a próxima linha do arquivo */
+		fgets(linha_arquivo, (RANKING_COLUNAS - 2), Arquivo);
+		
+		/* Se o Fim do Arquivo não foi Alcançado, Insere a Linha Lida na Tabela de Ranking */
+		if(!feof (Arquivo))
+		{
+			for(coluna = 2; coluna < RANKING_COLUNAS - 2; coluna++)
+			{
+				if((linha_arquivo[coluna - 2] == 0) || (linha_arquivo[coluna - 2] == '\n'))
+				{
+					break;
+				}
+				
+				tela_ranking[linha][coluna] = linha_arquivo[coluna - 2];
+			}
+		}
+		
+	}
+	
+	
+	/* Fecha Arquivo */
+	fclose (Arquivo);
+	
+	
+	/* Insere a Tabela na Próxima Tela a ser Exibida */
+	for(linha = 0; linha < RANKING_LINHAS; linha++)
+	{
+		for(coluna = 0; coluna < RANKING_COLUNAS; coluna++)
+		{
+			tela.tela[tela.proxima_tela][linha + RANKING_POSICAO_LINHA][coluna + RANKING_POSICAO_COLUNA] = tela_ranking[linha][coluna];
+		}
+	}
+	
 	
 }
 
@@ -618,23 +729,23 @@ void Inserir_Texto_Sobre()
 	int coluna_esquerda = 5;
 	int coluna_direita = coluna_esquerda + 70;
 	
-	const unsigned char Texto [15][150] = {  //1234567890123456789012345678901234567890123456789012345678901234567890
-											"                         Nome do Jogo: É Duro                         \0",
-											"                  Desenvolvedor: Cleber da Silva Melo                 \0",
-											"                                                                      \0",
-											"                             Sobre o Jogo:                            \0",
-											" Este é um projeto do Final do Semestre onde aplicaremos todos        \0"
-											" os conhecimentos adquiridos em Linguagem C através das matérias      \0",
-											" \"Algoritmos e Técnicas de Programação\" e                           \0", 
-											" \"Algoritmos e Estrutura de Dados\".                                 \0",
-											"                                                                      \0",
-											" O objetivo deste projeto é criar um jogo similar ao Enduro do Atari  \0",
-											" utilizando apenas os caracteres da tabela ASCII extendida.           \0",
-											"                                                                      \0",
-											" Obs.: Este projeto deve ser realizado em apenas 6 dias.              \0",
-											"                                                                      \0",
-											" Pressione ESC para Retornar ao Menu.                                 \0"
-										};
+	const char Texto [15][150] = {  //1234567890123456789012345678901234567890123456789012345678901234567890
+									"                         Nome do Jogo: É Duro                         \0",
+									"                  Desenvolvedor: Cleber da Silva Melo                 \0",
+									"                                                                      \0",
+									"                             Sobre o Jogo:                            \0",
+									" Este é um projeto do Final do Semestre onde aplicaremos todos        \0"
+									" os conhecimentos adquiridos em Linguagem C através das matérias      \0",
+									" \"Algoritmos e Técnicas de Programação\" e                           \0", 
+									" \"Algoritmos e Estrutura de Dados\".                                 \0",
+									"                                                                      \0",
+									" O objetivo deste projeto é criar um jogo similar ao Enduro do Atari  \0",
+									" utilizando apenas os caracteres da tabela ASCII extendida.           \0",
+									"                                                                      \0",
+									" Obs.: Este projeto deve ser realizado em apenas 6 dias.              \0",
+									"                                                                      \0",
+									" Pressione ESC para Retornar ao Menu.                                 \0"
+								};
 	
 	
 	
@@ -661,7 +772,7 @@ void Inserir_Texto_Sobre()
 	
 	
 	/* Permite o uso de Caracteres da Tabela ASCII Extendida */
-	setlocale(LC_ALL, "English");
+	setlocale(LC_ALL, "C");
 	
 	/* Bordas Superiores */
 		/* Imprime Canto Borda Superior Esquerda */

@@ -28,4 +28,8 @@ https://dev.to/noah11012/bitwise-operations-in-cc-3j3k
 
 Função setlocale
 http://www.cplusplus.com/reference/clocale/setlocale/
+
+Arquivos
+http://www.cplusplus.com/reference/cstdio/FILE/?kw=FILE
+
 */
