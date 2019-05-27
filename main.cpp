@@ -37,6 +37,7 @@
 
 /* Declaração de Funções */
 void Inicia_Jogo();
+int Verifica_Pontuacao(int pontuacao);
 int VerificaTeclasDeMovimentacao(char tecla);
 int Determina_Velocidade_do_Jogo(int pontuacao);
 
@@ -72,6 +73,8 @@ int main(void)
 		switch(opcao)
 		{
 			case '1':
+				Realiza_Inicializacao_das_Estruturas();
+				Exibe_Tela(); // Exibe as Bordas da Tela
 				Inicia_Jogo();
 				exibir_menu++;
 			break;
@@ -147,6 +150,7 @@ void Inicia_Jogo()
 	
 	/* Pontuação */
 	int pontuacao = 0;
+	int novo_recorde = 0;
 	float tempo_decorrido = 0; // número de segundo que será substituído pela pontuação de buracos
 	
 	/* Determina o Fim de Jogo */
@@ -227,6 +231,13 @@ void Inicia_Jogo()
 			
 		}
 	}
+	
+	//novo_recorde = Verifica_Pontuacao(pontuacao);
+	
+	if(novo_recorde)
+	{
+		//Exibe_Novo_Recorde(novo_recorde, pontuacao);
+	}
 }
 
 
@@ -263,6 +274,62 @@ int Determina_Velocidade_do_Jogo(int pontuacao)
 	return velocidade_do_jogo;
 }
 
+
+
+int Verifica_Pontuacao(int pontuacao)
+{
+	int linha = 0;
+	int coluna = 0;
+	int pontuacao_ranking = 0;
+	
+	FILE * Arquivo;	
+	char linha_arquivo [100];
+	
+	
+	/* Abre Arquivo para Leitura */
+	Arquivo = fopen (ARQUIVO_RECORDS , "r");
+	if (Arquivo != NULL)
+	{
+		while(!feof (Arquivo))
+		{
+			/* Armazena a Linha que está sendo Lida do Arquivo */
+			linha++;
+			
+			
+			/* Lê a próxima linha do arquivo */
+			fgets(linha_arquivo, (RANKING_COLUNAS - 2), Arquivo);
+			
+			/* Determina se a Linha Lida é um Registro de Recorde */
+			if	(
+					(linha_arquivo[0] >= '0') && (linha_arquivo[0] <= '9') &&
+					(linha_arquivo[1] >= '0') && (linha_arquivo[1] <= '9') &&
+					(linha_arquivo[2] >= '0') && (linha_arquivo[2] <= '9')
+				)
+			{
+				/* Transforma os Caracteres que Representam a Pontuação em um Número */
+				pontuacao_ranking  = linha_arquivo[0] * 100;
+				pontuacao_ranking += linha_arquivo[1] * 10;
+				pontuacao_ranking += linha_arquivo[2];
+				
+				/*	Se a Pontuaçao for Maior que a de um dos Registros,
+					retorna a Linha a ser Substituída */
+				if(pontuacao > pontuacao_ranking)
+				{
+					/* Fecha Arquivo */
+					fclose (Arquivo);
+					
+					return linha;
+				}
+			}
+		}
+	}
+	
+	/* Fecha Arquivo */
+	fclose (Arquivo);
+	
+	return 0;
+	
+}
 
 
 

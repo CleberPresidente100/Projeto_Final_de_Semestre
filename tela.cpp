@@ -40,13 +40,14 @@
 	#define NOME_DO_JOGO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 11)
 
 /* TABELA DE RANKING */
+/*
 	#define ARQUIVO_RECORDS "records.txt"
 	
 	#define RANKING_LINHAS 17
 	#define RANKING_COLUNAS 40
 	#define RANKING_POSICAO_LINHA 3
 	#define RANKING_POSICAO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - (RANKING_COLUNAS / 2) + 2)
-
+*/
 
 
 
@@ -195,34 +196,43 @@ int Inserir_Carro_na_Tela()
 {
 	int linha = 0;
 	int coluna = 0;
-	//int fim_de_jogo = 0;
+	int colisao = 0;
+	char auxiliar;
 	
 		
 	for(linha = 0; linha < TAMANHO_CARRO_LINHAS; linha++)
 	{
 		for(coluna = 0; coluna < TAMANHO_CARRO_COLUNAS; coluna++)
 		{
-			tela.tela[tela.proxima_tela][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] = carro.carro[linha][coluna];
-			
-			/* Verifica se o Carro Bateu em Algo */	/*		
-			if	(
-					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != 0) &&
-					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != BRANCO) &&
-					(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != carro.carro[linha][coluna])
-					 
-				)*/
+			/* Verifica se o Carro Bateu em Algo */
+			if(linha == TAMANHO_CARRO_LINHAS - 1)
 			{
-				fim_de_jogo++;
+				auxiliar = tela.tela[tela.proxima_tela][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro];
+				if((auxiliar != 0) && (auxiliar != BRANCO))
+				/*		
+				if	(
+						(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != 0) &&
+						(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != BRANCO) &&
+						(tela.tela[tela.tela_atual][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] != carro.carro[linha][coluna])
+						 
+					)*/
+				{
+					colisao++;
+				}
 			}
+			
+			tela.tela[tela.proxima_tela][linha + POSICAO_CARRO_LINHA][coluna + POSICAO_CARRO_COLUNA + carro.posicao_atual_carro] = carro.carro[linha][coluna];
 		}
 	}
 	
 	
 	/* Verifica se o Carro Bateu em Algo */
+	/*
 	if	(
 			Verifica_Colisao_Buraco(carro.posicao_atual_carro) ||
 			Verifica_Colisao_Pista(carro.posicao_atual_carro)
-		)
+		)*/
+	if(colisao)
 	{
 		return 1;
 	}
@@ -591,12 +601,8 @@ void Inserir_Recordes()
 {
 	int linha = 0;
 	int coluna = 0;
-		
-	int exibe_ranking_zerado = 0;
-	int quantidade_de_linhas = 0;
 	
 	FILE * Arquivo;	
-	fpos_t inicio_do_arquivo;
 	char linha_arquivo [100];
 	
 	
@@ -648,8 +654,6 @@ void Inserir_Recordes()
 		
 		if(Arquivo != NULL)
 		{	
-			fgetpos (Arquivo, &inicio_do_arquivo);
-			
 			     //1234567890123456789012345678901234567890
 			fputs("               Ranking                \n", Arquivo);
 			fputs("", Arquivo);
@@ -671,7 +675,6 @@ void Inserir_Recordes()
 			
 			/* Prepera Arquivo para a Leitura */
 			rewind(Arquivo);
-			//fsetpos (Arquivo, &inicio_do_arquivo);
 		}
 	}
 	
