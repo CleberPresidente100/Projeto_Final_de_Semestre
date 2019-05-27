@@ -77,6 +77,10 @@ int main(void)
 			break;
 			
 			case '2':
+				Realiza_Inicializacao_das_Estruturas();
+				Exibe_Tela(); // Exibe as Bordas da Tela
+				Exibe_Menu_Recordes();
+				while(getch() != ESC); // Espera a Tecla ESC ser Precionada
 				exibir_menu++;
 			break;
 			
