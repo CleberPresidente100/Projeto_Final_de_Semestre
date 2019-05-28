@@ -32,4 +32,7 @@ http://www.cplusplus.com/reference/clocale/setlocale/
 Arquivos
 http://www.cplusplus.com/reference/cstdio/FILE/?kw=FILE
 
+Passar Vetor Multidimensional como Parâmetro
+http://www.cplusplus.com/forum/beginner/73432/
+
 */
