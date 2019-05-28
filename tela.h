@@ -51,6 +51,16 @@
 		#define RANKING_POSICAO_LINHA 3
 		#define RANKING_POSICAO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - (RANKING_COLUNAS / 2) + 2)
 
+
+	/* TABELA DE NOVO RECORDE */
+		#define NOVO_RECORDE_LINHAS 6
+		#define NOVO_RECORDE_COLUNAS 29
+		#define NOVO_RECORDE_POSICAO_LINHA 11
+		#define NOVO_RECORDE_POSICAO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - (NOVO_RECORDE_COLUNAS / 2) + 2)
+	
+	/* BURACO */
+		#define BURACO_LINHA_INICIAL 3
+		#define BURACO_COLUNA_INICIAL ((TAMANHO_PISTA_COLUNAS / 2) + 2)
 	
 	/* Estruturas */
 	
@@ -64,12 +74,17 @@
 		void Inserir_Nome_do_Jogo();
 		void Inserir_Mensagem_Derrota();
 		void Realiza_Inicializacao_das_Estruturas();
+		void Exibe_Tela_Novo_Recorde(int pontuacao);
+		void Criar_Tela_Branco_com_Bordas(char *tela, int NUMERO_DE_LINHAS, int NUMERO_DE_COLUNAS);
+		void Transforma_Numero_em_String(char *numero, int pontuacao);
+		void Verifica_Arquivo_Recordes();
 	
 		/* Placar */
 		void Cria_Placar();
 		void Exibe_Placar();
 		void Inserir_Placar_na_Tela();
 		void Alterar_Placar(int pontuacao);
+		int Pontuacao();
 	
 		/* Tela */
 		void Inicializa_Telas();
@@ -86,6 +101,11 @@
 		/* Pista */
 		void Inserir_Pista_na_Tela();
 		void Atualiza_Falha_Pista(int linha);
+		
+		/* Buraco */
+		void Cria_Buraco();
+		void Movimenta_Buraco();
+		void Inserir_Buraco_na_Tela();
 	
 #endif
 

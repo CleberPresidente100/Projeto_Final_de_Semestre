@@ -39,6 +39,14 @@
 	#define NOME_DO_JOGO_LINHA (TAMANHO_PLACAR_LINHAS - 3)
 	#define NOME_DO_JOGO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - 11)
 
+/* TABELA DE NOVO RECORDE */
+/*
+	#define NOVO_RECORDE_LINHAS 6
+	#define NOVO_RECORDE_COLUNAS 30
+	#define NOVO_RECORDE_POSICAO_LINHA 3
+	#define NOVO_RECORDE_POSICAO_COLUNA ((TAMANHO_TELA_COLUNAS / 2) - (NOVO_RECORDE_COLUNAS / 2) + 2)
+	*/
+	
 /* TABELA DE RANKING */
 /*
 	#define ARQUIVO_RECORDS "records.txt"
@@ -125,13 +133,26 @@ struct struct_Placar
 
 struct struct_Tela
 {
-	int pos_top_left_linha; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo da Tela
-	int pos_top_left_coluna; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo da Tela
+	//int pos_top_left_linha; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo da Tela
+	//int pos_top_left_coluna; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo da Tela
 		
 	unsigned char tela_atual;
 	unsigned char proxima_tela;
 	char tela[NUMERO_DE_TELAS][TAMANHO_TELA_LINHAS][TAMANHO_TELA_COLUNAS];
 } tela;
+
+
+struct struct_Buraco
+{
+	int linha; // Linha em que o Buraco está.
+	int coluna; // A qual Coluna ele Pertence.
+	int regiao;
+	int tamanho;
+	int pontuacao;
+	
+	//char buraco[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
+} buraco;
+
 
 int fim_de_jogo;
 int pista_linha_falha;
@@ -149,6 +170,7 @@ void Realiza_Inicializacao_das_Estruturas()
 	Cria_Carro();
 	Cria_Pistas();
 	Cria_Placar();
+	Cria_Buraco();
 	Alterar_Placar(0);
 	Inicializa_Telas();
 }
@@ -367,8 +389,8 @@ void Inicializa_Telas()
 	int indice = 0;
 	
 	/* Inicializa Variáveis */
-	tela.pos_top_left_linha = 0; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo da Tela
-	tela.pos_top_left_coluna = 0; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo da Tela
+	//tela.pos_top_left_linha = 0; // Coordenada Y (Linha) na Tela Final do Pixel Superior Esquerdo da Tela
+	//tela.pos_top_left_coluna = 0; // Coordenada X (Coluna) na Tela Final do Pixel Superior Esquerdo da Tela
 		
 	tela.tela_atual = 0;
 	tela.proxima_tela = 1;
@@ -448,6 +470,7 @@ int Atualizar_Tela()
 	Limpa_Tela(tela.proxima_tela);
 	Inserir_Pista_na_Tela();
 	Inserir_Placar_na_Tela();
+	Inserir_Buraco_na_Tela();
 	fim_de_jogo = Inserir_Carro_na_Tela();
 	if(fim_de_jogo)
 	{
@@ -610,39 +633,7 @@ void Inserir_Recordes()
 		
 	
 	/* Criação da Tabela de Raking em Branco e com Bordas */
-	
-		/* Apaga a Tabela do Ranking e Coloca Bordas */
-		for(linha = 0; linha < RANKING_LINHAS; linha++)
-		{
-			for(coluna = 0; coluna < RANKING_COLUNAS; coluna++)
-			{
-				if((linha == 0) || (linha == RANKING_LINHAS - 1))
-				{
-					tela_ranking[linha][coluna] = 205;
-				}
-				else if((coluna == 0) || (coluna == RANKING_COLUNAS - 1))
-				{
-					tela_ranking[linha][coluna] = 186;
-				}
-				else
-				{
-					tela_ranking[linha][coluna] = BRANCO;
-				}
-			}
-		}
-		
-		/* Caracteres das Bordas */
-		/*
-		{201, 205, 187},
-		{186, 186},
-		{200, 205,188}
-		*/
-	
-		/* Acrescenta os Vértices das Bordas */
-		tela_ranking[0][0]										= 201;
-		tela_ranking[0][RANKING_COLUNAS - 1]					= 187;	
-		tela_ranking[RANKING_LINHAS - 1][0]						= 200;
-		tela_ranking[RANKING_LINHAS - 1][RANKING_COLUNAS - 1]	= 188;
+	Criar_Tela_Branco_com_Bordas((char *)tela_ranking, RANKING_LINHAS, RANKING_COLUNAS);
 	
 	
 	/* Abre Arquivo para Leitura */
@@ -650,33 +641,10 @@ void Inserir_Recordes()
 	if (Arquivo == NULL)
 	{		
 		/* Se o Arquivo não existir, cria um novo */
-		Arquivo = fopen (ARQUIVO_RECORDS , "w+");
-		
-		if(Arquivo != NULL)
-		{	
-			     //1234567890123456789012345678901234567890
-			fputs("               Ranking                \n", Arquivo);
-			fputs("", Arquivo);
-			fputs("001 - Cleber\n", Arquivo);
-			fputs("002 - Presidente\n", Arquivo);
-			fputs("003 - 100%\n", Arquivo);
-			fputs("004 - Cleber\n", Arquivo);
-			fputs("005 - Presidente\n", Arquivo);
-			fputs("006 - 100%\n", Arquivo);
-			fputs("007 - Cleber\n", Arquivo);
-			fputs("008 - Presidente\n", Arquivo);
-			fputs("009 - 100%\n", Arquivo);
-			fputs("010 - Cleber\n", Arquivo);
-			fputs("\n", Arquivo);
-			fputs("Pressione ESC para Retornar ao Menu.\n", Arquivo);
-			
-			/* Salva Informações do Buffer no Arquivo */
-			fflush(Arquivo);
-			
-			/* Prepera Arquivo para a Leitura */
-			rewind(Arquivo);
-		}
+		Verifica_Arquivo_Recordes();
 	}
+	
+	Arquivo = fopen (ARQUIVO_RECORDS , "r");
 	
 	
 	/*	Tanto a Linha quanto a Coluna começam em 2 pois na posição 0 é colocada a borda
@@ -823,6 +791,423 @@ void Inserir_Texto_Sobre()
 	
 	
 		
+}
+
+
+
+void Exibe_Tela_Novo_Recorde(int pontuacao)
+{
+	int linha = 0;
+	int coluna = 0;
+	int indice = 0;
+	int pontuacao_ranking = 0;
+	
+	FILE * Arquivo;	
+	char linha_arquivo [100];
+	
+	char nome_do_recordista[20];
+	char pontuacao_string[3];
+	char mensagem[3][29] =	{	//12345678901234567890123456789
+								{"       NOVO RECORDE !  "},
+								{"         XXX PONTOS    "},							
+								{"     DIGITE O SEU NOME:"}
+							};
+	
+	/*
+		=========================
+			NOVO RECORDE !
+			XXX PONTOS
+			DIGITE O SEU NOME:
+			XXXXXXXXXXXXXXXX
+			================
+	*/
+	
+	char tela_novo_recorde [NOVO_RECORDE_LINHAS][NOVO_RECORDE_COLUNAS];
+		
+	
+	/* Criação da Tabela de Novo Recorde em Branco e com Bordas */
+	Criar_Tela_Branco_com_Bordas((char *)tela_novo_recorde, NOVO_RECORDE_LINHAS, NOVO_RECORDE_COLUNAS);
+	
+	/* Adiciona a Mensagem na Tela*/
+	for(linha = 0; linha < 3; linha++)
+	{
+		for(coluna = 0; coluna < 29; coluna++)
+		{
+			if(mensagem[linha][coluna] != 0)
+			{
+				tela_novo_recorde[linha + 1][coluna + 1] = mensagem[linha][coluna];
+			}
+		}
+	}
+	
+	/* Transforma a Pontuação em Caracteres */
+	Transforma_Numero_em_String(pontuacao_string, pontuacao);
+	
+	
+	/* Adiciona Pontuação na Tela */
+	for(indice = 0, coluna = 10; indice < 3; coluna++, indice++)
+	{
+		tela_novo_recorde[2][coluna] = pontuacao_string[indice];
+	}
+	
+	/* Insere a Tabela na Próxima Tela a ser Exibida */
+	for(linha = 0; linha < NOVO_RECORDE_LINHAS; linha++)
+	{
+		for(coluna = 0; coluna < NOVO_RECORDE_COLUNAS; coluna++)
+		{
+			tela.tela[TELA_AUXILIAR][linha + NOVO_RECORDE_POSICAO_LINHA][coluna + NOVO_RECORDE_POSICAO_COLUNA] = tela_novo_recorde[linha][coluna];
+		}
+	}
+	
+	
+}
+
+
+
+void Criar_Tela_Branco_com_Bordas(char *tela, int NUMERO_DE_LINHAS, int NUMERO_DE_COLUNAS)
+{
+	int linha = 0;
+	int coluna = 0;	
+	
+	const int VERTICE_SUPERIOR_ESQUERDO	= 0;
+	const int VERTICE_SUPERIOR_DIREITO	= NUMERO_DE_COLUNAS - 1;
+	const int VERTICE_INFERIOR_ESQUERDO	= (NUMERO_DE_LINHAS - 1) * NUMERO_DE_COLUNAS;
+	const int VERTICE_INFERIOR_DIREITO	= (NUMERO_DE_LINHAS * NUMERO_DE_COLUNAS) - 1;
+	
+	
+	/* Apaga a Tabela do Ranking e Coloca Bordas */
+	for(linha = 0; linha < NUMERO_DE_LINHAS; linha++)
+	{
+		for(coluna = 0; coluna < NUMERO_DE_COLUNAS; coluna++)
+		{
+			if((linha == 0) || (linha == NUMERO_DE_LINHAS - 1))
+			{
+				tela[(linha * NUMERO_DE_COLUNAS) + coluna] = 205;
+			}
+			else if((coluna == 0) || (coluna == NUMERO_DE_COLUNAS - 1))
+			{
+				tela[(linha * NUMERO_DE_COLUNAS) + coluna] = 186;
+			}
+			else
+			{
+				tela[(linha * NUMERO_DE_COLUNAS) + coluna] = BRANCO;
+			}
+		}
+	}
+	
+	/* Caracteres das Bordas */
+	/*
+	{201, 205, 187},
+	{186, 186},
+	{200, 205,188}
+	*/
+
+	/* Acrescenta os Vértices das Bordas */
+	tela[VERTICE_SUPERIOR_ESQUERDO]	= 201;
+	tela[VERTICE_SUPERIOR_DIREITO]	= 187;	
+	tela[VERTICE_INFERIOR_ESQUERDO]	= 200;
+	tela[VERTICE_INFERIOR_DIREITO]	= 188;
+}
+
+
+
+
+void Transforma_Numero_em_String(char *numero, int pontuacao)
+{
+	int auxiliar_1 = 0;
+	int auxiliar_2 = 0;
+	
+	
+	/* Zera Número */
+	numero[0] = numero[1] = numero[2] = 48;
+	
+	/* Transforma Centena */
+	if(pontuacao > 99)
+	{
+		auxiliar_1	= pontuacao / 100;
+		numero[0]	= auxiliar_1 + 48;
+	}
+	
+	/* Transforma Dezena */
+	if(pontuacao > 9)
+	{
+		auxiliar_2	= pontuacao - (auxiliar_1 * 100);
+		numero[1]	= auxiliar_2 + 48;
+	}
+	
+	/* Transforma Unidade */
+	numero[2]	= (pontuacao - (auxiliar_1 * 100) - (auxiliar_2 * 10)) + 48;
+	
+}
+
+
+
+void Verifica_Arquivo_Recordes()
+{
+	FILE * Arquivo;
+	
+	
+	/* Abre Arquivo para Leitura */
+	Arquivo = fopen (ARQUIVO_RECORDS , "r");
+	if (Arquivo == NULL)
+	{		
+		/* Se o Arquivo não existir, cria um novo */
+		Arquivo = fopen (ARQUIVO_RECORDS , "w+");
+		
+		if(Arquivo != NULL)
+		{	
+			     //1234567890123456789012345678901234567890
+			fputs("               Ranking                \n\0", Arquivo);
+			fputs("\0", Arquivo);
+			fputs("010 - Cleber\n\0", Arquivo);
+			fputs("009 - Presidente\n\0", Arquivo);
+			fputs("008 - 100%\n\0", Arquivo);
+			fputs("007 - Cleber\n\0", Arquivo);
+			fputs("006 - Presidente\n\0", Arquivo);
+			fputs("005 - 100%\n\0", Arquivo);
+			fputs("004 - Cleber\n\0", Arquivo);
+			fputs("003 - Presidente\n\0", Arquivo);
+			fputs("002 - 100%\n\0", Arquivo);
+			fputs("001 - Cleber\n\0", Arquivo);
+			fputs("\n\0", Arquivo);
+			fputs("Pressione ESC para Retornar ao Menu.\n\0", Arquivo);
+			
+			/* Salva Informações do Buffer no Arquivo */
+			fflush(Arquivo);
+		}
+	}
+	
+	/* Fecha o Arquivo */
+	fclose(Arquivo);
+}
+
+
+
+void Movimenta_Buraco()
+{	
+	if(buraco.linha == BURACO_LINHA_INICIAL)
+	{
+		buraco.tamanho = 1;
+		buraco.coluna = BURACO_COLUNA_INICIAL;
+	}
+	else if(buraco.linha == (BURACO_LINHA_INICIAL + 1))
+	{
+		buraco.tamanho = 1;
+		buraco.coluna = BURACO_COLUNA_INICIAL + 1;
+	}
+	else if(buraco.linha == (BURACO_LINHA_INICIAL + 2))
+	{
+		buraco.tamanho = 1;
+		buraco.coluna = BURACO_COLUNA_INICIAL;
+	}
+	else if(buraco.linha == (BURACO_LINHA_INICIAL + 3))
+	{
+		buraco.tamanho = 1;
+		buraco.coluna = BURACO_COLUNA_INICIAL - 1;
+	}
+	else
+	{
+		// Determina a Posição do Buraco
+		switch(buraco.regiao)
+		{
+			case 0:
+				buraco.coluna++;
+				// Determina o Tamanho do Buraco e a Coluna
+				if(buraco.linha == 6)
+				{
+					buraco.tamanho = 2;
+					buraco.coluna = BURACO_COLUNA_INICIAL + 4;
+				}
+				else if(buraco.linha == 15)
+				{
+					buraco.tamanho = 3;
+					buraco.coluna = BURACO_COLUNA_INICIAL + 6;
+				}
+				else if(buraco.linha == 20)
+				{
+					buraco.tamanho = 4;
+					buraco.coluna = BURACO_COLUNA_INICIAL + 8;
+				}
+				else
+				{
+					buraco.tamanho = 5;
+					buraco.coluna = BURACO_COLUNA_INICIAL + 10;
+				}				
+			break;
+			
+			case 1:
+				// Determina o Tamanho do Buraco e a Coluna
+				if(buraco.linha == 6)
+				{
+					buraco.tamanho = 2;
+					buraco.coluna = BURACO_COLUNA_INICIAL + 1;
+				}
+				else if(buraco.linha == 15)
+				{
+					buraco.tamanho = 3;
+					buraco.coluna = BURACO_COLUNA_INICIAL;
+				}
+				else if(buraco.linha == 20)
+				{
+					buraco.tamanho = 4;
+					buraco.coluna = BURACO_COLUNA_INICIAL -1;
+				}
+				else
+				{
+					buraco.tamanho = 5;
+					buraco.coluna = BURACO_COLUNA_INICIAL -1;
+				}
+			break;
+			
+			case 2:
+			default:
+				buraco.coluna--;
+				// Determina o Tamanho do Buraco e a Coluna
+				if(buraco.linha == 6)
+				{
+					buraco.tamanho = 2;
+					buraco.coluna = BURACO_COLUNA_INICIAL - 4;
+				}
+				else if(buraco.linha == 15)
+				{
+					buraco.tamanho = 3;
+					buraco.coluna = BURACO_COLUNA_INICIAL - 6;
+				}
+				else if(buraco.linha == 20)
+				{
+					buraco.tamanho = 4;
+					buraco.coluna = BURACO_COLUNA_INICIAL - 8;
+				}
+				else
+				{
+					buraco.tamanho = 5;
+					buraco.coluna = BURACO_COLUNA_INICIAL -10;
+				}
+				
+			break;
+		}
+	}
+	
+	/* Verifica se o Buraco está em uma Posição Vertical Válida */
+	buraco.linha++;
+	if(buraco.linha > TAMANHO_TELA_LINHAS)
+	{
+		buraco.tamanho = 1;
+		buraco.linha = BURACO_LINHA_INICIAL;
+		
+		buraco.regiao++;
+		if(buraco.regiao > 2)
+		{
+			buraco.regiao = 0;
+		}
+		
+		buraco.pontuacao++;
+		Alterar_Placar(buraco.pontuacao);
+	}
+}
+
+
+
+void Inserir_Buraco_na_Tela()
+{
+	switch(buraco.tamanho)
+	{
+		case 1:
+			tela.tela[tela.proxima_tela][buraco.linha][buraco.coluna] = 219;
+		break;
+		
+		case 2:
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna] 	= 219;
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna] 	= 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 1] = 219;
+		break;
+		
+		case 3:
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 2] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna]		= 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 1] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 2] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 2] = ' ';
+		break;		
+		
+		case 4:
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 2] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 3] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna]		= 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 1] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 2] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 3] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna]		= 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 1] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 2] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 3] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 2] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 3] = ' ';
+		break;		
+		
+		case 5:
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 1] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 2] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 3] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha]		[buraco.coluna + 4] = ' ';
+			
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 2] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 3] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 1]	[buraco.coluna + 4] = ' ';
+			
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna]		= 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 1] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 2] = 176;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 3] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 2]	[buraco.coluna + 4] = 219;
+			
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 1] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 2] = 177;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 3] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 3]	[buraco.coluna + 4] = ' ';
+			
+			tela.tela[tela.proxima_tela][buraco.linha + 4]	[buraco.coluna]		= ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 4]	[buraco.coluna + 1] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 4]	[buraco.coluna + 2] = 219;
+			tela.tela[tela.proxima_tela][buraco.linha + 4]	[buraco.coluna + 3] = ' ';
+			tela.tela[tela.proxima_tela][buraco.linha + 4]	[buraco.coluna + 4] = ' ';
+		break;
+		
+		default:
+			buraco.tamanho = 1;
+		break;
+	}
+}
+
+
+
+void Cria_Buraco()
+{
+	buraco.regiao		= 1;
+	buraco.tamanho		= 1;
+	buraco.pontuacao	= 0;
+	buraco.linha		= BURACO_COLUNA_INICIAL;
+	buraco.coluna		= BURACO_COLUNA_INICIAL;	
+}
+
+
+
+int Pontuacao()
+{
+	return buraco.pontuacao;
 }
 
 

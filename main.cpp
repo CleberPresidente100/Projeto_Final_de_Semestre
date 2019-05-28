@@ -32,14 +32,20 @@
 #define SAIR '4'
 
 /* Estruturas */
-
+struct str_Novo_Recorde
+{
+	int colocacao_no_ranking;
+	fpos_t posicao_registo;
+};
 
 
 /* Declaração de Funções */
 void Inicia_Jogo();
-int Verifica_Pontuacao(int pontuacao);
+//fpos_t Verifica_Pontuacao(int pontuacao);
+void Verifica_Pontuacao(int pontuacao, str_Novo_Recorde *novo_recorde);
 int VerificaTeclasDeMovimentacao(char tecla);
-int Determina_Velocidade_do_Jogo(int pontuacao);
+int Determina_Velocidade_do_Jogo(unsigned int pontuacao);
+void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao);
 
 
 
@@ -53,6 +59,9 @@ int main(void)
 	
 	/* Permite o uso de Caracteres da Tabela ASCII Extendida */
 	setlocale(LC_ALL, "ALL");
+	
+	/* Cria os Arquivos Necessários */
+	Verifica_Arquivo_Recordes();
 	
 	
 	do
@@ -145,13 +154,14 @@ void Inicia_Jogo()
 	
 	/* Contagem de Tempo */
 	clock_t tempo_inicio;
+	unsigned int segundos = 0;
 	unsigned int milisegundos = 0;
 	unsigned int velocidade_do_jogo = 0;
 	
 	/* Pontuação */
 	int pontuacao = 0;
-	int novo_recorde = 0;
 	float tempo_decorrido = 0; // número de segundo que será substituído pela pontuação de buracos
+	str_Novo_Recorde novo_recorde;
 	
 	/* Determina o Fim de Jogo */
 	int fim_de_jogo = 0;
@@ -161,7 +171,7 @@ void Inicia_Jogo()
 	
 	
 	/* Configurações Iniciais */
-	velocidade_do_jogo = Determina_Velocidade_do_Jogo(pontuacao);
+	velocidade_do_jogo = Determina_Velocidade_do_Jogo(segundos);
 	tempo_inicio = Inicia_Cronometro();
 	
 	
@@ -197,17 +207,23 @@ void Inicia_Jogo()
 					posicao_falha_pista = 0;
 				}				
 				
+				/* Movimenta Buraco */
+				Movimenta_Buraco();
+				
 				Atualiza_Falha_Pista(posicao_falha_pista);
-				velocidade_do_jogo = Determina_Velocidade_do_Jogo(pontuacao);
+				velocidade_do_jogo = Determina_Velocidade_do_Jogo(segundos);
 			}
-						
-			/* Alterar Pontuação */
+			
+			
+			// Alterar Pontuação
 			tempo_decorrido += milisegundos;
 			if(tempo_decorrido >= 1000)
 			{
+				segundos++;
 				tempo_decorrido = 0;
 				
-				/* Validação da Pontuação */
+				/*
+				// Validação da Pontuação
 				pontuacao++;
 				if((pontuacao < 0) || (pontuacao > 999))
 				{
@@ -215,7 +231,12 @@ void Inicia_Jogo()
 				}
 				
 				Alterar_Placar(pontuacao);
+				*/
 			}
+			
+			
+			
+			
 			
 			/* Atualiza a Tela */
 			fim_de_jogo = Atualizar_Tela();
@@ -232,41 +253,45 @@ void Inicia_Jogo()
 		}
 	}
 	
-	//novo_recorde = Verifica_Pontuacao(pontuacao);
+	pontuacao = Pontuacao();
+	novo_recorde.colocacao_no_ranking = 0;	
+	Verifica_Pontuacao(pontuacao, &novo_recorde);
 	
-	if(novo_recorde)
+	if(novo_recorde.posicao_registo)
 	{
-		//Exibe_Novo_Recorde(novo_recorde, pontuacao);
+		Exibe_Tela_Novo_Recorde(pontuacao);
+		Exibe_Tela();
+		Salva_Novo_Recorde(&novo_recorde, pontuacao);
 	}
 }
 
 
 
-int Determina_Velocidade_do_Jogo(int pontuacao)
+int Determina_Velocidade_do_Jogo(unsigned int segundos)
 {
 	int velocidade_do_jogo = 0;
 	
-	if(pontuacao < 10)
+	if(segundos < 10)
 	{
 		velocidade_do_jogo = 50;
 	}
-	else if(pontuacao < 20)
+	else if(segundos < 20)
 	{
 		velocidade_do_jogo = 40;
 	}
-	else if(pontuacao < 30)
+	else if(segundos < 30)
 	{
 		velocidade_do_jogo = 30;
 	}
-	else if(pontuacao < 40)
+	else if(segundos < 40)
 	{
 		velocidade_do_jogo = 20;
 	}
-	else if(pontuacao < 50)
+	else if(segundos < 50)
 	{
 		velocidade_do_jogo = 10;
 	}
-	else if(pontuacao < 60)
+	else if(segundos < 60)
 	{
 		velocidade_do_jogo = 1;
 	}
@@ -276,13 +301,14 @@ int Determina_Velocidade_do_Jogo(int pontuacao)
 
 
 
-int Verifica_Pontuacao(int pontuacao)
+void Verifica_Pontuacao(int pontuacao, str_Novo_Recorde *novo_recorde)
 {
 	int linha = 0;
 	int coluna = 0;
 	int pontuacao_ranking = 0;
 	
 	FILE * Arquivo;	
+	fpos_t posicao_registo = 0;
 	char linha_arquivo [100];
 	
 	
@@ -292,9 +318,8 @@ int Verifica_Pontuacao(int pontuacao)
 	{
 		while(!feof (Arquivo))
 		{
-			/* Armazena a Linha que está sendo Lida do Arquivo */
-			linha++;
-			
+			/* Salva a posição do Registo Atual */
+			fgetpos(Arquivo, &novo_recorde->posicao_registo);
 			
 			/* Lê a próxima linha do arquivo */
 			fgets(linha_arquivo, (RANKING_COLUNAS - 2), Arquivo);
@@ -306,19 +331,24 @@ int Verifica_Pontuacao(int pontuacao)
 					(linha_arquivo[2] >= '0') && (linha_arquivo[2] <= '9')
 				)
 			{
-				/* Transforma os Caracteres que Representam a Pontuação em um Número */
-				pontuacao_ranking  = linha_arquivo[0] * 100;
-				pontuacao_ranking += linha_arquivo[1] * 10;
-				pontuacao_ranking += linha_arquivo[2];
 				
-				/*	Se a Pontuaçao for Maior que a de um dos Registros,
-					retorna a Linha a ser Substituída */
-				if(pontuacao > pontuacao_ranking)
+				/* Incrementa Variável que indica Posição no Ranking*/
+				novo_recorde->colocacao_no_ranking++;
+				
+				
+				
+				/* Transforma os Caracteres que Representam a Pontuação em um Número */
+				pontuacao_ranking  = (linha_arquivo[0] - 48) * 100;
+				pontuacao_ranking += (linha_arquivo[1] - 48) * 10;
+				pontuacao_ranking += (linha_arquivo[2] - 48);
+				
+				/*	Se a Pontuaçao for Maior ou Igual que a de um
+					dos Registros, retorna a Linha a ser Substituída */
+				if(pontuacao >= pontuacao_ranking)
 				{
 					/* Fecha Arquivo */
 					fclose (Arquivo);
-					
-					return linha;
+					return;
 				}
 			}
 		}
@@ -326,12 +356,153 @@ int Verifica_Pontuacao(int pontuacao)
 	
 	/* Fecha Arquivo */
 	fclose (Arquivo);
-	
-	return 0;
+	novo_recorde->posicao_registo = 0;
+	return;
 	
 }
 
 
+
+void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
+{
+	int indice = 0;
+	
+	FILE * Arquivo;	
+	char linhas_arquivo [13][100];
+	
+	char nome_do_recordista[20];
+	char pontuacao_string[3];
+	
+	
+	
+	/* Posiciona Cursor e Espera o Usuário Digitar o Nome */
+	gotoxy((NOVO_RECORDE_POSICAO_LINHA + 4), (NOVO_RECORDE_POSICAO_COLUNA + 5));
+	fflush(stdin);
+	scanf("%s", &nome_do_recordista);
+		
+	
+	/* Transforma a Pontuação em Caracteres */
+	Transforma_Numero_em_String(pontuacao_string, pontuacao);
+		
+	
+	/* Abre Arquivo para Leitura */
+	Arquivo = fopen (ARQUIVO_RECORDS , "r");
+	if (Arquivo != NULL)
+	{
+		while(!feof(Arquivo))
+		{
+			fgets(linhas_arquivo[indice++], (RANKING_COLUNAS - 2), Arquivo);
+		}
+		
+		/* Salva Informações do Buffer no Arquivo */
+		fflush(Arquivo);
+				
+		/* Fecha Arquivo */
+		fclose(Arquivo);
+		
+		Arquivo = fopen (ARQUIVO_RECORDS , "w");
+		if(Arquivo != NULL)
+		{
+			for(indice = 0; indice < 11; indice++)
+			{
+				if(indice == novo_recorde->colocacao_no_ranking)
+				{
+					/* Salva Novo Recorde no Arquivo */
+					fputs(pontuacao_string, Arquivo);
+					fputs(" - ", Arquivo);
+					fputs(nome_do_recordista, Arquivo);
+					fputs("\n\0", Arquivo);
+					
+					/* */
+					fputs(linhas_arquivo[indice], Arquivo);
+					//fputs("\n\0", Arquivo);
+				}
+				else
+				{
+					fputs(linhas_arquivo[indice], Arquivo);
+					//fputs("\n\0", Arquivo);
+				}
+				
+			}
+			
+			
+			fputs("Pressione ESC para Retornar ao Menu.\n\0", Arquivo);
+		}
+		
+		/* Salva Informações do Buffer no Arquivo */
+		fflush(Arquivo);
+		
+		/* Fecha Arquivo */
+		fclose(Arquivo);
+	}
+	
+	
+}
+
+
+
+
+//
+//void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
+//{
+//	int indice = 0;
+//	
+//	FILE * Arquivo;	
+//	char linhas_arquivo [13][100];
+//	
+//	char nome_do_recordista[20];
+//	char pontuacao_string[3];
+//	
+//	
+//	
+//	/* Posiciona Cursor e Espera o Usuário Digitar o Nome */
+//	gotoxy((NOVO_RECORDE_POSICAO_LINHA + 4), (NOVO_RECORDE_POSICAO_COLUNA + 5));
+//	gets(nome_do_recordista);
+//		
+//	
+//	/* Transforma a Pontuação em Caracteres */
+//	Transforma_Numero_em_String(pontuacao_string, pontuacao);
+//		
+//	
+//	/* Abre Arquivo para Leitura */
+//	Arquivo = fopen (ARQUIVO_RECORDS , "r");
+//	if (Arquivo != NULL)
+//	{	
+//		/* Posiciona Ponteiro do Arquivo */
+//		fsetpos(Arquivo, &novo_recorde->posicao_registo);
+//		
+//		/* Lê a Linha que será Substituída */
+//		fgets(linha_arquivo[indice], (RANKING_COLUNAS - 2), Arquivo);
+//		
+//		/* Reposiciona Ponteiro do Arquivo para o Início da Linha que será Substituída */
+//		fsetpos(Arquivo, &novo_recorde->posicao_registo);
+//		
+//		/* Salva Novo Recorde no Arquivo */
+//		fputs(pontuacao_string, Arquivo);
+//		fputs(" - ", Arquivo);
+//		fputs(nome_do_recordista, Arquivo);
+//		fputs("\n\0", Arquivo);
+//		
+//		/* Reposiciona os Registros que estão Abaixo do que foi Incluído */
+//		while(novo_recorde->colocacao_no_ranking <= 10)
+//		{
+//			novo_recorde->colocacao_no_ranking++;
+//			
+//			fputs(linha_arquivo[indice], Arquivo);
+//			fputs("\n\0", Arquivo);
+//			
+//			indice +=  (~indice) & 0x01;
+//			
+//			fgets(linha_arquivo[indice], (RANKING_COLUNAS - 2), Arquivo);
+//		}
+//		
+//		
+//		/* Salva Informações do Buffer no Arquivo */
+//		fflush(Arquivo);
+//	}
+//	
+//}
+//
 
 
 

@@ -36,16 +36,19 @@ const unsigned char BURACO[3][3][3] =	{
 												{' ', 219, ' '},
 												{219, 177, 219},
 												{' ', 219, ' '}
-											}
+											}/*
+											{
+												{' ', ' ', 219, ' ', ' '},
+												{' ', 219, 177, 219, ' '},
+												{219, 177, 176, 177, 219}
+												{' ', 219, 177, 219, ' '},
+												{' ', ' ', 219, ' ', ' '},
+											}*/
 										};
 
 
 /* Estruturas */
-struct struct_Buraco
-{
-	int posicao_buracos_linha[QUANTIDADE_MAXIMA_DE_BURACOS];
-	int posicao_buracos_coluna[QUANTIDADE_MAXIMA_DE_BURACOS];
-} buraco;
+
 
 /* Variáveis Globais */
 	unsigned char reta[TAMANHO_PISTA_LINHAS][TAMANHO_PISTA_COLUNAS];
@@ -60,12 +63,7 @@ void Cria_Pistas()
 	
 	Cria_Pista_Reta();
 	
-	
-	for(indice = 0; indice < QUANTIDADE_MAXIMA_DE_BURACOS; indice++)
-	{
-		//buraco.posicao_buracos_coluna[indice] = 0;
-	}
-	
+		
 }
 
 
