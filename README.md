@@ -81,7 +81,7 @@ Como eu gostei os resultados obtidos com este projeto. Eu iniciarei um novo proj
  
  Link para o Novo Projeto que contém a Nova Verão do Jogo:
   * :oncoming_automobile:
-  * :red_car: [Jogo É Duro](https://github.com/Presidente100/E_Duro) :red_car:
+  * :red_car: Jogo ["É Duro"](https://github.com/Presidente100/E_Duro) :red_car:
   * :oncoming_automobile:
  
  
