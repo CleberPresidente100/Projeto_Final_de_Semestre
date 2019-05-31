@@ -35,7 +35,7 @@ Todo o restante do projeto (do que foi desenvolvido no dia 3 até a versão fina
 
 Porém, eu verifiquei que o tempo seria um impeditivo para se fazer um jogo com as mesmas regras do Enduro. Por este motivo eu decidi que o jogo consistiria em um carro andando por uma pista reta na qual seria necessário desviar dos buracos que aparecem na pista.
 
-Outra consequência do prazo curto, foi que eu ignorei todas as boas práticas de programação e comecei a escrever o código de forma a otimizar o tempo (isto fez com que quase todo o programa ficasse dentro do arquivo tela.c e com diversos códigos replicados). :grin: :blush: :innocent:
+Outra consequência do prazo curto, foi que eu ignorei todas as boas práticas de programação e comecei a escrever o código de forma a otimizar o tempo (isto fez com que quase todo o programa ficasse dentro do arquivo tela.cpp e com diversos códigos replicados). :grin: :blush: :innocent:
 
 Segue uma lista das funcionalidade implementadas nestes dois dias:
   * Movimentação do Carro.
