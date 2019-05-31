@@ -68,7 +68,7 @@ Entretanto, mesmo com o projeto final não estando perfeito, eu considero que **
   
   2. **_Este é um projeto extremamente didático !_**
     Normalmente os projetos da área de programação são projetos de formulário. Ou seja, são cadastros de informações, pesquisa de informações, geração de relatórios etc. Consequentemente, não é algo que você pode fazer e se orgulhar de mostrar para seus amigos.
-    Todavia, **_um jogo é algo que todos conseguem entender, interagir, brincar e se divertir com ele. E este projeto é jogo um extremamente simples de se codificar, pois utiliza apenas os conhecimentos básicos de C._**
+    Todavia, **_um jogo é algo que todos conseguem entender, interagir, brincar e se divertir. E este projeto é jogo um extremamente simples de se codificar, pois utiliza apenas os conhecimentos básicos de C._**
 
 
 # Futuro
