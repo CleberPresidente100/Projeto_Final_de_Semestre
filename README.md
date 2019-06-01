@@ -5,6 +5,7 @@
 **Este é um projeto do Final do Semestre onde aplicaremos todos os conhecimentos adquiridos em Linguagem C através das matérias "Algoritmos e Técnicas de Programação" e "Algoritmos e Estrutura de Dados", ministradas pelo professor Claudinei na Universidade Anhanguera (UNIABC) de Santo André.**
 
 **O objetivo deste projeto é criar um jogo similar ao Enduro do Atari com as seguintes restrições:**
+  * **Utilizar a IDE Dev C++;**
   * **Utilizar apenas os caracteres da tabela ASCII extendida para se desenhar na tela;**
   * **Utilizar apenas o comando printf para se exibir algo na tela.**
   * **Este projeto deve ser realizado em apenas 6 dias.**
