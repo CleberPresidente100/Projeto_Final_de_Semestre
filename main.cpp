@@ -254,7 +254,6 @@ void Inicia_Jogo()
 	}
 	
 	pontuacao = Pontuacao();
-	novo_recorde.colocacao_no_ranking = 0;	
 	Verifica_Pontuacao(pontuacao, &novo_recorde);
 	
 	if(novo_recorde.posicao_registo)
@@ -311,6 +310,8 @@ void Verifica_Pontuacao(int pontuacao, str_Novo_Recorde *novo_recorde)
 	fpos_t posicao_registo = 0;
 	char linha_arquivo [100];
 	
+	// Inicializa Variável
+	novo_recorde->colocacao_no_ranking = 0;
 	
 	/* Abre Arquivo para Leitura */
 	Arquivo = fopen (ARQUIVO_RECORDS , "r");
@@ -367,8 +368,9 @@ void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
 {
 	int indice = 0;
 	
-	FILE * Arquivo;	
-	char linhas_arquivo [13][100];
+	FILE * Arquivo;
+	char auxiliar[100];
+	char linhas_arquivo [10][100];
 	
 	char nome_do_recordista[20];
 	char pontuacao_string[3];
@@ -389,43 +391,74 @@ void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
 	Arquivo = fopen (ARQUIVO_RECORDS , "r");
 	if (Arquivo != NULL)
 	{
+		// Inicializa Variável 
+		indice = 0;
+		
+		/* Lê Arquivo */
 		while(!feof(Arquivo))
 		{
-			fgets(linhas_arquivo[indice++], (RANKING_COLUNAS - 2), Arquivo);
+			/* Lê a próxima linha do arquivo */
+			fgets(auxiliar, (RANKING_COLUNAS - 2), Arquivo);
+			
+			/* Determina se a Linha Lida é um Registro de Recorde */
+			if	(
+					(auxiliar[0] >= '0') && (auxiliar[0] <= '9') &&
+					(auxiliar[1] >= '0') && (auxiliar[1] <= '9') &&
+					(auxiliar[2] >= '0') && (auxiliar[2] <= '9')
+				)
+			{
+				strcpy(linhas_arquivo[indice], auxiliar);
+				indice++;
+			}
 		}
 		
 		/* Salva Informações do Buffer no Arquivo */
-		fflush(Arquivo);
+		//fflush(Arquivo);
 				
 		/* Fecha Arquivo */
 		fclose(Arquivo);
 		
+		
+		
+		
+		// Cria novo Registro para ser Inserido na Tabela de Recordes
+		strcpy(auxiliar, pontuacao_string);
+		strcat(auxiliar, " - ");
+		strcat(auxiliar, nome_do_recordista);
+		strcat(auxiliar, "\n\0");
+		
+		
+		// Atualiza Tabela de Recordes
+		for(indice = 9; indice >= 0; indice--)
+		{
+			if(indice == novo_recorde->colocacao_no_ranking)
+			{
+				strcpy(linhas_arquivo[indice], auxiliar);
+				// Ao Encontrar a posição correta, não há mais o que se alterar. Então sai do for.
+				break;
+			}
+			else
+			{
+				// Faz o registro cair 1 posição na tabela para poder inserir o novo recorde
+				strcpy(linhas_arquivo[indice], linhas_arquivo[indice - 1]);
+			}
+		}
+		
 		Arquivo = fopen (ARQUIVO_RECORDS , "w");
 		if(Arquivo != NULL)
 		{
-			for(indice = 0; indice < 11; indice++)
+			// Salva Cabeçalho no Arquivo
+			fputs("               Ranking                \n\0", Arquivo);
+			fputs("\0", Arquivo);
+						
+			// Salva Registros de Recorde Atualizados no Arquivo
+			for(indice = 0; indice < 10; indice++)
 			{
-				if(indice == novo_recorde->colocacao_no_ranking)
-				{
-					/* Salva Novo Recorde no Arquivo */
-					fputs(pontuacao_string, Arquivo);
-					fputs(" - ", Arquivo);
-					fputs(nome_do_recordista, Arquivo);
-					fputs("\n\0", Arquivo);
-					
-					/* */
-					fputs(linhas_arquivo[indice], Arquivo);
-					//fputs("\n\0", Arquivo);
-				}
-				else
-				{
-					fputs(linhas_arquivo[indice], Arquivo);
-					//fputs("\n\0", Arquivo);
-				}
-				
+				fputs(linhas_arquivo[indice], Arquivo);	
 			}
 			
-			
+			// Salva Rodapé no Arquivo
+			fputs("\n\0", Arquivo);
 			fputs("Pressione ESC para Retornar ao Menu.\n\0", Arquivo);
 		}
 		
@@ -441,68 +474,6 @@ void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
 
 
 
-
-//
-//void Salva_Novo_Recorde(str_Novo_Recorde *novo_recorde, int pontuacao)
-//{
-//	int indice = 0;
-//	
-//	FILE * Arquivo;	
-//	char linhas_arquivo [13][100];
-//	
-//	char nome_do_recordista[20];
-//	char pontuacao_string[3];
-//	
-//	
-//	
-//	/* Posiciona Cursor e Espera o Usuário Digitar o Nome */
-//	gotoxy((NOVO_RECORDE_POSICAO_LINHA + 4), (NOVO_RECORDE_POSICAO_COLUNA + 5));
-//	gets(nome_do_recordista);
-//		
-//	
-//	/* Transforma a Pontuação em Caracteres */
-//	Transforma_Numero_em_String(pontuacao_string, pontuacao);
-//		
-//	
-//	/* Abre Arquivo para Leitura */
-//	Arquivo = fopen (ARQUIVO_RECORDS , "r");
-//	if (Arquivo != NULL)
-//	{	
-//		/* Posiciona Ponteiro do Arquivo */
-//		fsetpos(Arquivo, &novo_recorde->posicao_registo);
-//		
-//		/* Lê a Linha que será Substituída */
-//		fgets(linha_arquivo[indice], (RANKING_COLUNAS - 2), Arquivo);
-//		
-//		/* Reposiciona Ponteiro do Arquivo para o Início da Linha que será Substituída */
-//		fsetpos(Arquivo, &novo_recorde->posicao_registo);
-//		
-//		/* Salva Novo Recorde no Arquivo */
-//		fputs(pontuacao_string, Arquivo);
-//		fputs(" - ", Arquivo);
-//		fputs(nome_do_recordista, Arquivo);
-//		fputs("\n\0", Arquivo);
-//		
-//		/* Reposiciona os Registros que estão Abaixo do que foi Incluído */
-//		while(novo_recorde->colocacao_no_ranking <= 10)
-//		{
-//			novo_recorde->colocacao_no_ranking++;
-//			
-//			fputs(linha_arquivo[indice], Arquivo);
-//			fputs("\n\0", Arquivo);
-//			
-//			indice +=  (~indice) & 0x01;
-//			
-//			fgets(linha_arquivo[indice], (RANKING_COLUNAS - 2), Arquivo);
-//		}
-//		
-//		
-//		/* Salva Informações do Buffer no Arquivo */
-//		fflush(Arquivo);
-//	}
-//	
-//}
-//
 
 
 
